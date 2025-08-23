@@ -1,0 +1,37 @@
+services:
+    transmission-openvpn:
+        image: haugene/transmission-openvpn
+        container_name: transmission-openvpn
+        restart: unless-stopped
+        deploy:
+          resources:
+            limits:
+              memory: 2G # adjust to your needs
+        cap_add:
+          - NET_ADMIN
+        volumes:
+          - ${PATH_TO_CONFIG}:/config
+          - ${PATH_TO_DOWNLOADS}:/data # optional
+          - ${PATH_TO_WATCH_FOLDER}:/data/watch # optional
+        environment:
+          - PUID=1000
+          - PGID=1000
+          - TZ=Europe/Warsaw
+          - OPENVPN_PROVIDER=${OPENVPN_PROVIDER}
+          - NORDVPN_COUNTRY=${NORDVPN_COUNTRY}
+#          - OPENVPN_CONFIG=${OPENVPN_CONFIG}
+# Do not use NordVPN username! 
+# To obtain the credentials proceed with the manual configuration in NordVPN account.
+          - OPENVPN_USERNAME=${OPENVPN_USERNAME}
+          - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+          - LOCAL_NETWORK=${LOCAL_NETWORK} # see .env file for comments
+          - TRANSMISSION_WEB_UI=${TRANSMISSION_WEB_UI} # optional
+        logging:
+          driver: json-file
+          options:
+            max-size: 10m
+        ports:
+          - '9091:9091'
+
+# Not all the countries and servers are supporting p2p, so you need to choose the right server. Here's the hint:
+# https://support.nordvpn.com/hc/en-us/articles/20465085067665-NordVPN-proxy-setup-for-BitTorrent
