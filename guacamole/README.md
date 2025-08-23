@@ -1,30 +1,16 @@
 # Guacamole
 
-[Guacamole](https://guacamole.apache.org/) is a clientless remote desktop gateway. It supports standard protocols like VNC, RDP, and SSH.
+Apache Guacamole is a free and open-source, clientless remote desktop gateway that allows you to access remote computers and servers through a web browser. It supports standard protocols like VNC, RDP, and SSH.
 
-This directory contains a Docker Compose setup for Guacamole.
+[Apache Guacamole Website](https://guacamole.apache.org/)
 
-## Docker Compose Setup
+## How to start
 
-### Services
+1.  Create a `.env` file based on the `.env.example` file.
+2.  Set the `PATH_TO_CONFIG` variable in the `.env` file.
+3.  Run `docker-compose up -d` to start the application.
+4.  The application will be available at [http://localhost:8080](http://localhost:8080).
 
-- **guacamole**: The Guacamole application.
+## Setup
 
-### Volumes
-
-- `${PATH_TO_CONFIG}`: Stores the Guacamole configuration files.
-
-### Ports
-
-- `8080:8080`: The Guacamole web interface is accessible on port 8080.
-
-## Usage
-
-1. Create a `.env` file with the following variables:
-
-```
-# Path to a directory where the Guacamole configuration files will be stored
-PATH_TO_CONFIG=/path/to/guacamole/config
-```
-
-2. Run `docker-compose up -d` to start the container.
+After starting the application, you can access the web interface and configure your connections.

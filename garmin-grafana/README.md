@@ -1,41 +1,24 @@
-# Garmin Grafana
+# Garmin-Grafana
 
-This directory contains a Docker Compose setup for a Garmin Grafana dashboard.
+This directory contains the configuration for a set of services that fetches data from Garmin Connect, stores it in InfluxDB, and visualizes it with Grafana.
 
-This setup will fetch your Garmin Connect data and store it in an InfluxDB database. You can then use Grafana to visualize the data.
+## Services
 
-## Docker Compose Setup
+-   **garmin-fetch-data**: A service that fetches data from Garmin Connect.
+-   **influxdb**: An InfluxDB database for storing Garmin Connect data.
+-   **grafana**: A Grafana instance for visualizing the data.
 
-### Services
+## How to start
 
-- **garmin-fetch-data**: Fetches your Garmin Connect data and stores it in InfluxDB.
-- **influxdb**: An InfluxDB database for storing your Garmin Connect data.
-- **grafana**: A Grafana instance for visualizing your Garmin Connect data.
+1.  Create a `.env` file based on the `.env.example` file.
+2.  Set the `GARMINCONNECT_EMAIL` and `GARMINCONNECT_PASSWORD` variables in the `.env` file.
+3.  Run `docker-compose up -d` to start the application.
 
-### Volumes
+## Setup
 
-- `${GARMINCONNECT_TOKENS}`: Stores the Garmin Connect tokens.
-- `influxdb_data`: Stores the InfluxDB database files.
-- `grafana_data`: Stores the Grafana configuration files.
+After starting the application, you can access the Grafana web interface at [http://localhost:3000](http://localhost:3000) and log in with the default credentials:
 
-### Ports
+-   **User**: `admin`
+-   **Password**: `admin`
 
-- `8086:8086`: The InfluxDB API is accessible on port 8086.
-- `3000:3000`: The Grafana web interface is accessible on port 3000.
-
-## Usage
-
-1. Create a `.env` file with the following variables:
-
-```
-# Your Garmin Connect email address
-GARMINCONNECT_EMAIL=<your_email>
-
-# Your Garmin Connect password, base64 encoded
-GARMINCONNECT_PASSWORD=<your_base64_encoded_password>
-
-# Path to a directory where the Garmin Connect tokens will be stored
-GARMINCONNECT_TOKENS=/path/to/garminconnect/tokens
-```
-
-2. Run `docker-compose up -d` to start the containers.
+You can then configure a new data source for InfluxDB and create dashboards to visualize your Garmin Connect data.

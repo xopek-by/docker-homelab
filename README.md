@@ -4,7 +4,7 @@ This directory contains Docker Compose setups for various self-hosted applicatio
 
 Most of these configurations use `.env` files for environment variables. These were designed to be used with Portainer, but can be used with `docker-compose` as well.
 
-## Projects
+## Current projects
 
 - [Bookstack](bookstack/README.md)
 - [DDNS Cloudflare](ddns-cloudflare/README.md)

@@ -1,31 +1,15 @@
 # Cloudflare DDNS
 
-This directory contains a Docker Compose setup for a Cloudflare DDNS client.
+This directory contains the configuration for the `favonia/cloudflare-ddns` Docker image. This image provides a DDNS client for Cloudflare, which automatically updates your DNS records when your IP address changes.
 
-This service will automatically update your Cloudflare DNS records with your public IP address.
+[GitHub Repository](https://github.com/favonia/cloudflare-ddns)
 
-## Docker Compose Setup
+## How to start
 
-### Services
+1.  Create a `.env` file based on the `.env.example` file.
+2.  Set the `CLOUDFLARE_API_TOKEN` and `DOMAINS` variables in the `.env` file.
+3.  Run `docker-compose up -d` to start the application.
 
-- **cloudflare-ddns**: The Cloudflare DDNS client.
+## Setup
 
-### Environment Variables
-
-- `CLOUDFLARE_API_TOKEN`: Your Cloudflare API token.
-- `DOMAINS`: A comma-separated list of domains to update.
-- `PROXIED`: Whether or not to proxy the domains through Cloudflare.
-
-## Usage
-
-1. Create a `.env` file with the following variables:
-
-```
-# Cloudflare API key. User -> My Profile -> API tokens
-CLOUDFLARE_API_TOKEN=your_api_key
-
-# Cloudflare zone, which will be used. Dashboard -> Web Sites
-DOMAINS=your_domains
-```
-
-2. Run `docker-compose up -d` to start the container.
+After starting the application, the DDNS client will automatically update your Cloudflare DNS records.

@@ -1,14 +1,23 @@
-!!! ATTENTION !!!
-The docker-compose.yaml that is present here is redesigned so that it can be used in Portainer. 
-If you want to run it from the docker compose command line, just replace stack.env with .env
+# Immich
 
-Sometimes Immich may return error 500 after startup. It helps to stop all containers and then start them in that order:
-1. immich_postgres, immich_redis, immich_typesense
-2. Here you need to wait 3-5 minutes to be sure, that typesense is running correctly
-3. Rest of the containers, including immich_server
+Immich is a free and open-source, self-hosted photo and video management application. It is designed to be a private alternative to cloud-based services like Google Photos, allowing you to store and manage your media on your own hardware. This gives you complete control over your data and privacy.
 
-NGINX Reverse Proxy note
+[Immich Website](https://immich.app/)
 
-After 1.94 you must enable Websockets Support in the proxy host settings, as they now are used to check the server status from the frontend.
+## Services
 
-![Example](image.png)
+-   **immich-server**: The main application server.
+-   **immich-machine-learning**: Handles machine learning tasks like image tagging and object recognition.
+-   **redis**: A Redis server for caching.
+-   **database**: A PostgreSQL database for storing application data.
+
+## How to start
+
+1.  Create a `.env` file based on the `.env.example` file.
+2.  Set the `UPLOAD_LOCATION` and `DB_DATA_LOCATION` variables in the `.env` file.
+3.  Run `docker-compose up -d` to start the application.
+4.  The application will be available at [http://localhost:2283](http://localhost:2283).
+
+## Setup
+
+After starting the application, you can access the web interface and create a new user. You can also download the mobile apps for Android and iOS to automatically back up your photos and videos.

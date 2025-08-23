@@ -1,24 +1,16 @@
 # Heimdall
 
-[Heimdall](https://heimdall.site/) is a dashboard for all your web applications.
+Heimdall Application Dashboard is a web-based dashboard for organizing and accessing your web applications and links. It provides a simple and elegant interface to keep all your frequently used links in one place, which you can set as your browser's start page.
 
-This directory contains a Docker Compose setup for Heimdall.
+[Heimdall Website](https://heimdall.site/)
 
-## Docker Compose Setup
+## How to start
 
-### Services
+1.  Create a `.env` file based on the `.env.example` file.
+2.  Set the `TZ` variable in the `.env` file.
+3.  Run `docker-compose up -d` to start the application.
+4.  The application will be available at [http://localhost](http://localhost).
 
-- **heimdall**: The Heimdall application.
+## Setup
 
-### Volumes
-
-- `/home/mbuz/docker/heimdall/config:/config`: Stores the Heimdall configuration files. You should change this to a path on your own system.
-
-### Ports
-
-- `80:80`: The Heimdall web interface is accessible on port 80.
-- `443:443`: The Heimdall web interface is accessible on port 443.
-
-## Usage
-
-1. Run `docker-compose up -d` to start the container.
+After starting the application, you can access the web interface and start adding your applications and links.
