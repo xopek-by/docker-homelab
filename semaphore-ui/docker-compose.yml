@@ -12,6 +12,3 @@ services:
         volumes:
             - /home/mbuz/docker/semaphore/data:/var/lib/semaphore
             - /home/mbuz/docker/semaphore/config:/etc/semaphore
-volumes:
-    /home/mbuz/docker/semaphore/data:
-    /home/mbuz/docker/semaphore/config:
