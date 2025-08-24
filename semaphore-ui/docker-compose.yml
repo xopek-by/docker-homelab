@@ -9,6 +9,9 @@ services:
             SEMAPHORE_ADMIN_PASSWORD: ${ADMIN_PASS}
             SEMAPHORE_ADMIN_NAME: ${ADMIN_NAME}
             SEMAPHORE_ADMIN_EMAIL: ${ADMIN_EMAIL}
-        volumes:
-            - /home/mbuz/docker/semaphore/data:/var/lib/semaphore
-            - /home/mbuz/docker/semaphore/config:/etc/semaphore
+        volumes:       
+            - semaphore-data:/var/lib/semaphore
+            - semaphore-config:/etc/semaphore  
+volumes:
+  semaphore-data:
+  semaphore-config:
