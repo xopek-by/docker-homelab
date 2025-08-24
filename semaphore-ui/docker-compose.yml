@@ -1,0 +1,17 @@
+services:
+    semaphore:
+        ports:
+            - 3030:3000
+        image: semaphoreui/semaphore:v2.16.18
+        environment:
+            SEMAPHORE_DB_DIALECT: sqlite
+            SEMAPHORE_ADMIN: ${ADMIN_USER}
+            SEMAPHORE_ADMIN_PASSWORD: ${ADMIN_PASS}
+            SEMAPHORE_ADMIN_NAME: ${ADMIN_NAME}
+            SEMAPHORE_ADMIN_EMAIL: ${ADMIN_EMAIL}
+        volumes:       
+            - semaphore-data:/var/lib/semaphore
+            - semaphore-config:/etc/semaphore  
+volumes:
+  semaphore-data:
+  semaphore-config:
