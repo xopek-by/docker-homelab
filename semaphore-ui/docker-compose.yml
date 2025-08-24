@@ -1,0 +1,26 @@
+services:
+    semaphore:
+        ports:
+            - 3030:3000
+        image: semaphoreui/semaphore:v2.16.18
+        environment:
+            SEMAPHORE_DB_DIALECT: sqlite
+            SEMAPHORE_ADMIN: ${ADMIN_USER}
+            SEMAPHORE_ADMIN_PASSWORD: ${ADMIN_PASS}
+            SEMAPHORE_ADMIN_NAME: ${ADMIN_NAME}
+            SEMAPHORE_ADMIN_EMAIL: ${ADMIN_EMAIL}
+<<<<<<< HEAD
+        volumes:       
+            - semaphore-data:/var/lib/semaphore
+            - semaphore-config:/etc/semaphore  
+volumes:
+  semaphore-data:
+  semaphore-config:
+=======
+        volumes:
+            - /home/mbuz/docker/semaphore/data:/var/lib/semaphore
+            - /home/mbuz/docker/semaphore/config:/etc/semaphore
+volumes:
+    /home/mbuz/docker/semaphore/data:
+    /home/mbuz/docker/semaphore/config:
+>>>>>>> 24861aa (ADD: Semaphore UI initial commit)
