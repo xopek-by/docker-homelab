@@ -4,49 +4,65 @@ services:
     image: thisisarpanghosh/garmin-fetch-data:latest
     container_name: garmin-fetch-data
     depends_on:
-      - influxdb
+      influxdb:
+        condition: service_healthy
     volumes:
       - ${GARMINCONNECT_TOKENS}:/home/appuser/.garminconnect # (persistant tokens storage - garminconnect-tokens folder must be owned by 1000:1000)
     environment:
       - INFLUXDB_HOST=influxdb
       - INFLUXDB_PORT=8086
       - INFLUXDB_USERNAME=influxdb_user
-      - INFLUXDB_PASSWORD=influxdb_secret_password
+      - INFLUXDB_PASSWORD=${INFLUXDB_PASSWORD}
       - INFLUXDB_DATABASE=GarminStats
       - UPDATE_INTERVAL_SECONDS=300
       - LOG_LEVEL=INFO
       - GARMINCONNECT_EMAIL=${GARMINCONNECT_EMAIL}
       - GARMINCONNECT_BASE64_PASSWORD=${GARMINCONNECT_PASSWORD} # (must be base64 encoded)
-
+    networks:
+      - garmin-grafana-net
 
   influxdb:
     restart: unless-stopped
     container_name: influxdb
     hostname: influxdb
+    image: influxdb:latest
     environment:
       - INFLUXDB_DB=GarminStats
       - INFLUXDB_USER=influxdb_user
-      - INFLUXDB_USER_PASSWORD=influxdb_secret_password
+      - INFLUXDB_USER_PASSWORD=${INFLUXDB_PASSWORD}
       - INFLUXDB_DATA_INDEX_VERSION=tsi1
     ports:
       - '8086:8086'
     volumes:
-      - influxdb_data:/var/lib/influxdb
-    image: 'influxdb:1.11'
+      - ${PATH_TO_INFLUXDB_DATA}:/var/lib/influxdb
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - garmin-grafana-net
 
   grafana:
     restart: unless-stopped
     container_name: grafana
     hostname: grafana
+    image: grafana/grafana:latest
     environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
     volumes:
-      - grafana_data:/var/lib/grafana
+      - ${PATH_TO_GRAFANA_DATA}:/var/lib/grafana
     ports:
       - '3000:3000'
-    image: 'grafana/grafana:latest'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - garmin-grafana-net
 
-volumes:
-  influxdb_data:
-  grafana_data:
+networks:
+  garmin-grafana-net:
+    driver: bridge

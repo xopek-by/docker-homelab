@@ -19,4 +19,15 @@ services:
       PUID: 1000
       PGID: 1000
       TZ: Europe/Warsaw
-      BASE_URL: ${YOUR_DOMAIN:-https://mealie.yourdomain.com} 
+      BASE_URL: ${YOUR_DOMAIN:-https://mealie.yourdomain.com}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - mealie-net
+
+networks:
+  mealie-net:
+    driver: bridge

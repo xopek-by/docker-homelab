@@ -32,6 +32,11 @@ services:
             max-size: 10m
         ports:
           - '9091:9091'
+        healthcheck:
+          test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:9091 && ls /data || exit 1"]
+          interval: 1m
+          timeout: 10s
+          retries: 3
 
 # Not all the countries and servers are supporting p2p, so you need to choose the right server. Here's the hint:
 # https://support.nordvpn.com/hc/en-us/articles/20465085067665-NordVPN-proxy-setup-for-BitTorrent

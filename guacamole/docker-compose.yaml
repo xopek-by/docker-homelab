@@ -1,5 +1,5 @@
-# An image from abesnier that works as an all-in-one and does not require database initiation. 
-# I don't know if it has any limitations. For my needs it fits perfectly. 
+# An image from abesnier that works as an all-in-one and does not require database initiation.
+# I don't know if it has any limitations. For my needs it fits perfectly.
 
 services:
   guacamole:
@@ -10,3 +10,14 @@ services:
       - ${PATH_TO_CONFIG}:/config
     ports:
       - 8080:8080
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - guacamole-net
+
+networks:
+  guacamole-net:
+    driver: bridge

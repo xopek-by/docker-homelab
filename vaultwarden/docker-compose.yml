@@ -9,3 +9,8 @@ services:
       - ${PATH_TO_DATA}:/data
     ports:
       - 8033:80
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost/ || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3

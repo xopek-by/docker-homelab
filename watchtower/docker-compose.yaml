@@ -1,0 +1,13 @@
+services:
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_INCLUDE_STOPPED=true
+      - WATCHTOWER_POLL_INTERVAL=3600
+      - TZ=${TZ}
+    command: ${WATCHTOWER_CONTAINERS}
+    restart: unless-stopped
