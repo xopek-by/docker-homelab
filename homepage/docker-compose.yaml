@@ -4,6 +4,8 @@ services:
     container_name: homepage
     ports:
       - "3001:3000"
+    env_file:
+      - .env # Make sure this file exists and contains necessary environment variables (chek .env.example)
     volumes:
       - ${PATH_TO_CONFIG}:/app/config # Make sure your local config directory exists
       - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
