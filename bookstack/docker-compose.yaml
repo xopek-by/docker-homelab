@@ -14,11 +14,14 @@ services:
     volumes:
       - ${PATH_TO_CONFIG}:/config
     ports:
-      - 6875:80
+      - "6875:80"
     restart: unless-stopped
     depends_on:
-      - bookstack_database
- 
+      bookstack_database:
+        condition: service_healthy
+    networks:
+      - bookstack-net
+
   bookstack_database:
     image: lscr.io/linuxserver/mariadb
     container_name: bookstack_database
@@ -33,3 +36,14 @@ services:
     volumes:
       - ${PATH_TO_DB}:/config
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bookstack-net
+
+networks:
+  bookstack-net:
+    driver: bridge

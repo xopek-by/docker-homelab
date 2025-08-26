@@ -1,17 +1,29 @@
 services:
-    semaphore:
-        ports:
-            - 3030:3000
-        image: semaphoreui/semaphore:v2.16.18
-        environment:
-            SEMAPHORE_DB_DIALECT: sqlite
-            SEMAPHORE_ADMIN: ${ADMIN_USER}
-            SEMAPHORE_ADMIN_PASSWORD: ${ADMIN_PASS}
-            SEMAPHORE_ADMIN_NAME: ${ADMIN_NAME}
-            SEMAPHORE_ADMIN_EMAIL: ${ADMIN_EMAIL}
-        volumes:       
-            - semaphore-data:/var/lib/semaphore
-            - semaphore-config:/etc/semaphore  
+  semaphore:
+    container_name: semaphore-ui
+    image: semaphoreui/semaphore:latest
+    restart: unless-stopped
+    ports:
+      - "3030:3000"
+    env_file:
+      - .env
+    volumes:
+      - semaphore-data:/var/lib/semaphore
+      - semaphore-config:/etc/semaphore
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - semaphore-net
+
 volumes:
   semaphore-data:
+    driver: local
   semaphore-config:
+    driver: local
+
+networks:
+  semaphore-net:
+    driver: bridge

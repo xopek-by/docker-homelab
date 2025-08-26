@@ -5,3 +5,14 @@ services:
             - '8182:80' # change if needed
         restart: unless-stopped
         container_name: it-tools
+        healthcheck:
+          test: ["CMD", "curl", "-f", "http://localhost/"]
+          interval: 30s
+          timeout: 10s
+          retries: 3
+        networks:
+          - it-tools-net
+
+networks:
+  it-tools-net:
+    driver: bridge
