@@ -7,7 +7,7 @@ services:
       influxdb:
         condition: service_healthy
     volumes:
-      - ${GARMINCONNECT_TOKENS}:/home/appuser/.garminconnect # (persistant tokens storage - garminconnect-tokens folder must be owned by 1000:1000)
+  - garminconnect_tokens:/home/appuser/.garminconnect # persisted tokens storage (named volume)
     environment:
       - INFLUXDB_HOST=influxdb
       - INFLUXDB_PORT=8086
@@ -34,7 +34,7 @@ services:
     ports:
       - '8086:8086'
     volumes:
-      - ${PATH_TO_INFLUXDB_DATA}:/var/lib/influxdb
+  - influxdb_data:/var/lib/influxdb
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8086/ping"]
       interval: 10s
@@ -52,7 +52,7 @@ services:
       - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
     volumes:
-      - ${PATH_TO_GRAFANA_DATA}:/var/lib/grafana
+  - grafana_data:/var/lib/grafana
     ports:
       - '3000:3000'
     healthcheck:
@@ -66,3 +66,11 @@ services:
 networks:
   garmin-grafana-net:
     driver: bridge
+
+volumes:
+  garminconnect_tokens:
+    name: garminconnect_tokens
+  influxdb_data:
+    name: influxdb_data
+  grafana_data:
+    name: grafana_data
