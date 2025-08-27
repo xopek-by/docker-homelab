@@ -32,13 +32,15 @@ services:
       - mongo
     ports:
       - 9120:9120
-    env_file: ./compose.env
+    env_file: 
+      - .env
     environment:
       KOMODO_DATABASE_ADDRESS: mongo:27017
       KOMODO_DATABASE_USERNAME: ${KOMODO_DB_USERNAME}
       KOMODO_DATABASE_PASSWORD: ${KOMODO_DB_PASSWORD}
     volumes:
       ## Store dated backups of the database - https://komo.do/docs/setup/backup
+      ## No need to have bind mounts because of the ability to create backups on a separate volume
       - ${COMPOSE_KOMODO_BACKUPS_PATH}:/backups
       ## Store sync files on server
       # - /path/to/syncs:/syncs
