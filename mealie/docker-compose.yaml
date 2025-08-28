@@ -21,7 +21,7 @@ services:
       TZ: Europe/Warsaw
       BASE_URL: ${BASE_URL:-https://mealie.yourdomain.com}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000"]
+      test: ["CMD-SHELL", "python -c 'import socket; s = socket.socket(); s.connect((\"localhost\", 9000))'"]
       interval: 30s
       timeout: 10s
       retries: 3
