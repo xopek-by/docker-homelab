@@ -32,7 +32,7 @@ services:
     restart: unless-stopped
     container_name: influxdb
     hostname: influxdb
-    image: influxdb:latest
+    image: influxdb:1.8
     environment:
       - INFLUXDB_DB=GarminStats
       - INFLUXDB_USER=influxdb_user
