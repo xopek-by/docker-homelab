@@ -4,7 +4,7 @@ services:
     depends_on:
       - temp-influxdb
     volumes:
-      - /opt/garmin/tokens:/home/appuser/.garminconnect
+      - /opt/docker/garmin-grafana/tokens:/home/appuser/.garminconnect
     environment:
       - INFLUXDB_HOST=temp-influxdb
       - INFLUXDB_PORT=8086
