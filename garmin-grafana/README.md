@@ -22,7 +22,12 @@ This directory contains the configuration for a set of services that fetches dat
     > The fetcher requires a database connection to start. Use the provided [`server-token-setup.yaml`](./server-token-setup.yaml) file.
     >
     > 1. Copy `server-token-setup.yaml` to your server.
-    > 2. Run:
+    > 2. **Important:** Ensure the target folder exists and is writable by the container user (UID 1000):
+    >    ```bash
+    >    sudo mkdir -p /opt/docker/garmin-grafana/tokens
+    >    sudo chown -R 1000:1000 /opt/docker/garmin-grafana/tokens
+    >    ```
+    > 3. Run:
     >    ```bash
     >    docker-compose -f server-token-setup.yaml run --rm setup-fetcher
     >    ```
@@ -41,6 +46,23 @@ After starting the application, you can access the Grafana web interface at [htt
 -   **Password**: `admin`
 
 Configure a new data source for InfluxDB (URL: `http://influxdb:8086`, Database: `GarminStats`) and import the dashboards.
+
+## Setup Dashboard
+
+You need to manually import the dashboard into Grafana to visualize your data.
+
+**Method 1: Import via ID (Recommended)**
+1.  Go to Grafana (`http://localhost:3000`).
+2.  Navigate to **Dashboards -> New -> Import**.
+3.  Enter the Dashboard ID: `23245` and click **Load**.
+4.  Select your InfluxDB data source and click **Import**.
+
+**Method 2: Import via JSON File**
+1.  Download the dashboard JSON file:
+    [Garmin-Grafana-Dashboard.json](https://raw.githubusercontent.com/arpanghosh8453/garmin-grafana/main/Grafana_Dashboard/Garmin-Grafana-Dashboard.json)
+2.  Go to Grafana -> **Dashboards -> New -> Import**.
+3.  Upload the downloaded JSON file.
+4.  Select your InfluxDB data source and click **Import**.
 
 ## Historical Data Download (Bulk Import)
 
