@@ -1,0 +1,15 @@
+services:
+  setup-fetcher:
+    image: thisisarpanghosh/garmin-fetch-data:latest
+    depends_on:
+      - temp-influxdb
+    volumes:
+      - /opt/garmin/tokens:/home/appuser/.garminconnect
+    environment:
+      - INFLUXDB_HOST=temp-influxdb
+      - INFLUXDB_PORT=8086
+      - INFLUXDB_DATABASE=GarminStats
+  temp-influxdb:
+    image: influxdb:1.8
+    environment:
+      - INFLUXDB_DB=GarminStats

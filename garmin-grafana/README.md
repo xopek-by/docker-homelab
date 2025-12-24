@@ -18,15 +18,18 @@ This directory contains the configuration for a set of services that fetches dat
     ```
     Enter your 2FA code when prompted. The tokens will be saved to the `./garminconnect_tokens` folder.
 
-    > **Server Console (Komodo/Portainer):**
-    > If you can SSH into your server but don't know where Komodo stores the stack files:
-    > 1. Create a permanent directory for tokens: `mkdir -p /opt/garmin/tokens`
-    > 2. Run the generator manually, mounting this directory:
+    > **Server Console (Komodo/Portainer) - Robust Method:**
+    > The fetcher requires a database connection to start. Use the provided [`server-token-setup.yml`](./server-token-setup.yml) file.
+    >
+    > 1. Copy `server-token-setup.yml` to your server.
+    > 2. Run:
     >    ```bash
-    >    docker run --rm -it -v /opt/garmin/tokens:/home/appuser/.garminconnect thisisarpanghosh/garmin-fetch-data:latest
+    >    docker-compose -f server-token-setup.yml run --rm setup-fetcher
     >    ```
-    > 3. Enter your 2FA code.
-    > 4. In Komodo/Portainer, configure your stack's "Environment Variables" to set the `GARMINCONNECT_TOKENS` variable to the path of the tokens folder.
+    > The script will interactively prompt you for your **Garmin Email**, **Password**, and **2FA Code**.
+    > The tokens will be generated in `/opt/garmin/tokens` (as defined in the yaml).
+    >
+    > Finally, in Komodo/Portainer, set the environment variable `GARMINCONNECT_TOKENS=/opt/garmin/tokens`.
 
 4.  Run `docker-compose up -d` to start the application.
 
