@@ -11,14 +11,33 @@ This directory contains the configuration for a set of services that fetches dat
 ## How to start
 
 1.  Create a `.env` file based on the `.env.example` file.
-2.  Set the `GARMINCONNECT_EMAIL` and `GARMINCONNECT_PASSWORD` variables in the `.env` file.
-3.  Run `docker-compose up -d` to start the application.
+2.  Set the `GARMINCONNECT_EMAIL` and `GARMINCONNECT_PASSWORD` (Base64 encoded) variables in the `.env` file.
+3.  **If you have 2FA enabled:** You must authenticate manually once to generate the session tokens.
+    ```bash
+    docker-compose run --rm garmin-fetch-data
+    ```
+    Enter your 2FA code when prompted. The tokens will be saved to the `garminconnect_tokens` volume.
+4.  Run `docker-compose up -d` to start the application.
 
-## Setup
+## Setup & Access
 
-After starting the application, you can access the Grafana web interface at [http://localhost:3000](http://localhost:3000) and log in with the default credentials:
+After starting the application, you can access the Grafana web interface at [http://localhost:3000](http://localhost:3000).
 
 -   **User**: `admin`
 -   **Password**: `admin`
 
-You can then configure a new data source for InfluxDB and create dashboards to visualize your Garmin Connect data.
+Configure a new data source for InfluxDB (URL: `http://influxdb:8086`, Database: `GarminStats`) and import the dashboards.
+
+## Historical Data Download (Bulk Import)
+
+To download old history, use the `MANUAL_START_DATE` variable. This will fetch data in reverse chronological order from the current date (or `MANUAL_END_DATE`) back to the start date.
+
+```bash
+docker-compose run --rm -e MANUAL_START_DATE=YYYY-MM-DD garmin-fetch-data
+```
+
+**Options:**
+-   `MANUAL_END_DATE=YYYY-MM-DD`: Optional end date (defaults to today).
+-   `FETCH_SELECTION=...`: Limit what data is fetched (e.g., `activity,sleep`).
+
+*Note: Garmin archives intraday data older than 6 months, so very old detailed data (HR, sleep stages) might be missing unless manually refreshed in the Garmin Connect app.*

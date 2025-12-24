@@ -18,6 +18,13 @@ services:
       - LOG_LEVEL=INFO
       - GARMINCONNECT_EMAIL=${GARMINCONNECT_EMAIL}
       - GARMINCONNECT_BASE64_PASSWORD=${GARMINCONNECT_PASSWORD} # (must be base64 encoded)
+      - GARMINCONNECT_IS_CN=False
+      # - USER_TIMEZONE=Europe/Paris # Optional: Override automatic timezone detection
+      # - FETCH_SELECTION=daily_avg,sleep,steps,heartrate,stress # Optional: Select specific data to fetch
+      # - KEEP_FIT_FILES=False
+      # - ALWAYS_PROCESS_FIT_FILES=False
+      # - MANUAL_START_DATE=2023-01-01 # For bulk import: set date and run with docker-compose run ...
+      # - MANUAL_END_DATE=2023-01-31   # For bulk import: defaults to today if unset
     networks:
       - garmin-grafana-net
 
@@ -34,9 +41,9 @@ services:
     ports:
       - '8086:8086'
     volumes:
-     - influxdb_data:/var/lib/influxdb
+      - influxdb_data:/var/lib/influxdb
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8086/ping"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8086/ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -56,7 +63,7 @@ services:
     ports:
       - '3000:3000'
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/api/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
