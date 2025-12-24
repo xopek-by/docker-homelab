@@ -7,7 +7,7 @@ services:
       influxdb:
         condition: service_healthy
     volumes:
-      - garminconnect_tokens:/home/appuser/.garminconnect # persisted tokens storage (named volume)
+      - ${GARMINCONNECT_TOKENS}:/home/appuser/.garminconnect # Local folder for tokens
     environment:
       - INFLUXDB_HOST=influxdb
       - INFLUXDB_PORT=8086
@@ -75,8 +75,6 @@ networks:
     driver: bridge
 
 volumes:
-  garminconnect_tokens:
-    name: garminconnect_tokens
   influxdb_data:
     name: influxdb_data
   grafana_data:
