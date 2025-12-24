@@ -45,7 +45,20 @@ After starting the application, you can access the Grafana web interface at [htt
 -   **User**: `admin`
 -   **Password**: `admin`
 
-Configure a new data source for InfluxDB (URL: `http://influxdb:8086`, Database: `GarminStats`) and import the dashboards.
+## Setup Data Source
+
+Before importing the dashboard, you must connect Grafana to InfluxDB.
+
+1.  Go to **Connections -> Data Sources -> Add data source**.
+2.  Select **InfluxDB**.
+3.  Configure with these settings:
+    -   **Query Language**: `InfluxQL` (default)
+    -   **URL**: `http://influxdb:8086`
+    -   **Database**: `GarminStats`
+    -   **User**: `influxdb_user`
+    -   **Password**: `influxdb_secret_password` (or whatever you set in `.env` for `INFLUXDB_PASSWORD`)
+    -   **HTTP Method**: `GET`
+4.  Click **Save & Test**. You should see "Data source is working".
 
 ## Setup Dashboard
 
@@ -66,10 +79,10 @@ You need to manually import the dashboard into Grafana to visualize your data.
 
 ## Historical Data Download (Bulk Import)
 
-To download old history, use the `MANUAL_START_DATE` variable. This will fetch data in reverse chronological order from the current date (or `MANUAL_END_DATE`) back to the start date.
+To download old history **without modifying your configuration files**, use the `docker-compose run` command with the `-e` flag. This starts a temporary container just for this task.
 
 ```bash
-docker-compose run --rm -e MANUAL_START_DATE=YYYY-MM-DD garmin-fetch-data
+docker-compose run --rm -e MANUAL_START_DATE=2025-01-01 garmin-fetch-data
 ```
 
 **Options:**
