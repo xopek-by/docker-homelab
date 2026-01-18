@@ -4,7 +4,7 @@ services:
     container_name: siyuan
     command: [ "--workspace=/siyuan/workspace", "--accessAuthCode=${SIYUAN_ACCESS_CODE}" ]
     ports:
-      - "${SIYUAN_PORT}:6800"
+      - "${SIYUAN_PORT:-6806}:6806"
     volumes:
       - "${SIYUAN_DATA_DIR}:/siyuan/workspace"
     restart: unless-stopped
