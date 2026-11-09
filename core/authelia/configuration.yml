@@ -84,6 +84,9 @@ identity_providers:
         redirect_uris:
           - 'https://immich.mbuz.uk/auth/login'
           - 'https://immich.mbuz.uk/user-settings'
+          # Direct LAN access (bypasses NPM)
+          - 'http://10.0.0.102:2283/auth/login'
+          - 'http://10.0.0.102:2283/user-settings'
           - 'app.immich:///oauth-callback'
         scopes: ['openid', 'profile', 'email']
         response_types: ['code']
