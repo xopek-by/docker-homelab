@@ -8,6 +8,17 @@ services:
       # Only the existing account; new users via admin invite if ever needed
       SIGNUPS_ALLOWED: "false"
       INVITATIONS_ALLOWED: "false"
+      # SSO via Authelia (OIDC). The master password is still needed to decrypt the vault.
+      SSO_ENABLED: "true"
+      # Keep email + master password login as a fallback
+      SSO_ONLY: "false"
+      SSO_AUTHORITY: "https://auth.mbuz.uk"
+      SSO_SCOPES: "email profile offline_access"
+      SSO_PKCE: "true"
+      SSO_CLIENT_ID: "vaultwarden"
+      SSO_CLIENT_SECRET: "${SSO_CLIENT_SECRET}"
+      # Link the existing account by its email on first SSO login
+      SSO_SIGNUPS_MATCH_EMAIL: "true"
     volumes:
       - ${PATH_TO_DATA}:/data
     ports:
