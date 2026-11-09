@@ -14,18 +14,41 @@ services:
       AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE: /secrets/JWT_SECRET
       AUTHELIA_SESSION_SECRET_FILE: /secrets/SESSION_SECRET
       AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE: /secrets/STORAGE_ENCRYPTION_KEY
+      AUTHELIA_SESSION_REDIS_PASSWORD_FILE: /secrets/REDIS_PASSWORD
     volumes:
       - ./configuration.yml:/config/configuration.yml:ro
       - ${AUTHELIA_DATA:-/opt/docker_data/authelia}/data:/data
       - ${AUTHELIA_DATA:-/opt/docker_data/authelia}/secrets:/secrets:ro
+    depends_on:
+      - redis
     # No published ports: reachable only through NPM on the shared "proxy" network
     networks:
       - proxy
+      - internal
     deploy:
       resources:
         limits:
           memory: 256M
 
+  # Session store, so Authelia restarts don't log everyone out
+  redis:
+    image: valkey/valkey:8.1.11-alpine
+    container_name: authelia-redis
+    restart: unless-stopped
+    # Password comes from the same host secret file Authelia reads
+    command: ["sh", "-c", "exec valkey-server --requirepass \"$$(cat /secrets/REDIS_PASSWORD)\" --appendonly yes --save 60 1"]
+    volumes:
+      - ${AUTHELIA_DATA:-/opt/docker_data/authelia}/redis:/data
+      - ${AUTHELIA_DATA:-/opt/docker_data/authelia}/secrets/REDIS_PASSWORD:/secrets/REDIS_PASSWORD:ro
+    networks:
+      - internal
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
 networks:
   proxy:
     external: true
+  # Authelia <-> Redis only, not reachable from NPM or other stacks
+  internal:

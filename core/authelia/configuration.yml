@@ -47,6 +47,10 @@ session:
   inactivity: '2h'
   expiration: '12h'
   remember_me: '1M'
+  # Sessions survive Authelia restarts; password from AUTHELIA_SESSION_REDIS_PASSWORD_FILE
+  redis:
+    host: 'redis'
+    port: 6379
   cookies:
     - domain: 'mbuz.uk'
       authelia_url: 'https://auth.mbuz.uk'
