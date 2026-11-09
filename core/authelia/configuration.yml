@@ -54,7 +54,7 @@ session:
   cookies:
     - domain: 'mbuz.uk'
       authelia_url: 'https://auth.mbuz.uk'
-      default_redirection_url: 'https://mbuz.uk'
+      # No default_redirection_url: a direct login stays on the portal (logged-in page)
 
 regulation:
   max_retries: 5
