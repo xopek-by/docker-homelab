@@ -1,33 +1,29 @@
+# Seafile CE 13 (docker-cloud). Based on the official 13.0 seafile-server.yml,
+# trimmed: no Caddy (NPM is the reverse proxy), no SeaDoc/notification/AI servers,
+# memcached kept as cache to minimise changes during the 12 -> 13 upgrade.
 services:
   db:
-    image: mariadb:latest
+    # Pin the exact running version; never :latest together with MARIADB_AUTO_UPGRADE
+    image: mariadb:11.7.2
     container_name: seafile_database
+    restart: unless-stopped
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${INIT_SEAFILE_MYSQL_ROOT_PASSWORD}
       - MYSQL_LOG_CONSOLE=true
       - MARIADB_AUTO_UPGRADE=1
     volumes:
-      - "${MYSQL_DATA_VOLUME:-/opt/seafile-mysql/db}:/var/lib/mysql"
+      - "${SEAFILE_MYSQL_VOLUME:-/opt/seafile-mysql/db}:/var/lib/mysql"
     networks:
       - seafile-net
     healthcheck:
-      test:
-        [
-          "CMD",
-          "/usr/local/bin/healthcheck.sh",
-          "--connect",
-          "--mariadbupgrade",
-          "--innodb_initialized",
-        ]
+      test: ["CMD", "/usr/local/bin/healthcheck.sh", "--connect", "--mariadbupgrade", "--innodb_initialized"]
       interval: 20s
       start_period: 30s
       timeout: 5s
       retries: 10
-    restart: unless-stopped
-
 
   memcached:
-    image: memcached
+    image: memcached:1.6.45-alpine
     container_name: seafile_memcached
     entrypoint: memcached -m 256
     restart: unless-stopped
@@ -35,39 +31,55 @@ services:
       - seafile-net
 
   seafile:
-    image: seafileltd/seafile-mc:12.0-latest
+    image: seafileltd/seafile-mc:13.0.29
     container_name: seafile_server
+    restart: unless-stopped
     ports:
-      - "80:80"
+      # LAN only; NPM on docker-apps proxies seafile.mbuz.uk here
+      - "10.0.0.102:80:80"
     volumes:
-      - ${SEAFILE_DATA_VOLUME:-/opt/seafile-data}:/shared
+      - ${SEAFILE_VOLUME:-/opt/seafile-data}:/shared
     environment:
-      - SITE_ROOT=/
-      - DB_HOST=db
-      - DB_PORT=3306
-      - DB_USER=seafile
-      - DB_ROOT_PASSWD=${MYSQL_ROOT_PASSWORD}
-      - DB_PASSWORD=${SEAFILE_DB_PASSWORD}
-      - TIME_ZONE=${TIME_ZONE:-Etc/UTC}
+      - SEAFILE_MYSQL_DB_HOST=db
+      - SEAFILE_MYSQL_DB_PORT=3306
+      - SEAFILE_MYSQL_DB_USER=seafile
+      - SEAFILE_MYSQL_DB_PASSWORD=${SEAFILE_MYSQL_DB_PASSWORD:?Variable is not set or empty}
+      - INIT_SEAFILE_MYSQL_ROOT_PASSWORD=${INIT_SEAFILE_MYSQL_ROOT_PASSWORD}
+      - SEAFILE_MYSQL_DB_CCNET_DB_NAME=ccnet_db
+      - SEAFILE_MYSQL_DB_SEAFILE_DB_NAME=seafile_db
+      - SEAFILE_MYSQL_DB_SEAHUB_DB_NAME=seahub_db
+      - TIME_ZONE=${TIME_ZONE:-Europe/Warsaw}
       - INIT_SEAFILE_ADMIN_EMAIL=${INIT_SEAFILE_ADMIN_EMAIL}
       - INIT_SEAFILE_ADMIN_PASSWORD=${INIT_SEAFILE_ADMIN_PASSWORD}
-      - SEAFILE_SERVER_HOSTNAME=${SEAFILE_SERVER_HOSTNAME}
-      - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY}
+      - SEAFILE_SERVER_HOSTNAME=${SEAFILE_SERVER_HOSTNAME:?Variable is not set or empty}
+      - SEAFILE_SERVER_PROTOCOL=${SEAFILE_SERVER_PROTOCOL:-https}
+      - SITE_ROOT=/
+      - NON_ROOT=false
+      - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY:?Variable is not set or empty}
       - SEAFILE_LOG_TO_STDOUT=true
-      - SEAFILE_SERVER_PROTOCOL=${SEAFILE_SERVER_PROTOCOL}
+      - ENABLE_GO_FILESERVER=true
+      - ENABLE_SEADOC=false
+      - CACHE_PROVIDER=memcached
+      - MEMCACHED_HOST=memcached
+      - MEMCACHED_PORT=11211
+      - ENABLE_NOTIFICATION_SERVER=false
+      - ENABLE_SEAFILE_AI=false
+      - ENABLE_FACE_RECOGNITION=false
+      - SEAFILE_AI_SECRET_KEY=${JWT_PRIVATE_KEY}
+      - MD_FILE_COUNT_LIMIT=100000
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     depends_on:
       db:
         condition: service_healthy
       memcached:
         condition: service_started
-    restart: unless-stopped
     networks:
       - seafile-net
-    healthcheck:
-      test: ["CMD", "curl", "-fs", "http://localhost/"]
-      interval: 5s
-      timeout: 3s
-      start_period: 5s
 
 networks:
   seafile-net:
