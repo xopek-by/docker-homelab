@@ -5,6 +5,9 @@ services:
     restart: unless-stopped
     environment:
       DOMAIN: "${DOMAIN}"
+      # Only the existing account; new users via admin invite if ever needed
+      SIGNUPS_ALLOWED: "false"
+      INVITATIONS_ALLOWED: "false"
     volumes:
       - ${PATH_TO_DATA}:/data
     ports:
