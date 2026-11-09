@@ -35,8 +35,9 @@ services:
     container_name: seafile_server
     restart: unless-stopped
     ports:
-      # LAN only; NPM on docker-apps proxies seafile.mbuz.uk here
-      - "10.0.0.102:80:80"
+      # NPM on docker-apps proxies seafile.mbuz.uk here. Not bound to 10.0.0.102: Docker starts
+      # before the VM gets its address after a host reboot, and the bind would fail.
+      - "80:80"
     volumes:
       - ${SEAFILE_VOLUME:-/opt/seafile-data}:/shared
     environment:

@@ -6,8 +6,9 @@ services:
     container_name: n8n
     restart: unless-stopped
     ports:
-      # LAN only: services on other hosts (Komodo, Proxmox) post webhooks here
-      - "10.0.0.101:5678:5678"
+      # Services on other hosts (Komodo, Proxmox) post webhooks here. Not bound to 10.0.0.101:
+      # Docker starts before the VM gets its address after a host reboot, and the bind would fail.
+      - "5678:5678"
     environment:
       TZ: Europe/Warsaw
       GENERIC_TIMEZONE: Europe/Warsaw
