@@ -13,7 +13,7 @@
             username: "{{HOMEPAGE_VAR_PROXMOX_PAM}}"
             password: "{{HOMEPAGE_VAR_PROXMOX_SECRET}}"
     - Komodo:
-        href: "{{HOMEPAGE_VAR_KOMODO_URL}}"
+        href: https://komodo.mbuz.uk
         icon: komodo
         widget:
             type: komodo
