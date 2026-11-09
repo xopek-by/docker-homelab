@@ -1,0 +1,28 @@
+services:
+  authelia:
+    image: authelia/authelia:4.39.28
+    # NPM snippets resolve the upstream by this exact name
+    container_name: authelia
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-Europe/Warsaw}
+      X_AUTHELIA_CONFIG: /config/configuration.yml
+      # Secrets are read from files generated on the host (see README), never from git
+      AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE: /secrets/JWT_SECRET
+      AUTHELIA_SESSION_SECRET_FILE: /secrets/SESSION_SECRET
+      AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE: /secrets/STORAGE_ENCRYPTION_KEY
+    volumes:
+      - ./configuration.yml:/config/configuration.yml:ro
+      - ${AUTHELIA_DATA:-/opt/docker_data/authelia}/data:/data
+      - ${AUTHELIA_DATA:-/opt/docker_data/authelia}/secrets:/secrets:ro
+    # No published ports: reachable only through NPM on the shared "proxy" network
+    networks:
+      - proxy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+networks:
+  proxy:
+    external: true

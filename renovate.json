@@ -1,0 +1,57 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":dependencyDashboard"],
+  "timezone": "Europe/Warsaw",
+  "labels": ["renovate"],
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 15,
+  "osvVulnerabilityAlerts": true,
+  "ignorePaths": ["lab/**"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Images whose tag is a compose variable default, e.g. image: foo/bar:${FOO_TAG:-1.2.3}",
+      "managerFilePatterns": ["/(^|/)docker-compose\\.ya?ml$/"],
+      "matchStrings": ["image:\\s*['\"]?(?<depName>[^\\s:'\"$]+):\\$\\{[A-Z0-9_]+:-(?<currentValue>[^}]+)\\}"],
+      "datasourceTemplate": "docker"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "core: patch/minor/digest updates are merged automatically after 3 days of soak time",
+      "matchFileNames": ["core/**", ".gitea/**"],
+      "matchUpdateTypes": ["minor", "patch", "digest", "pin"],
+      "minimumReleaseAge": "3 days",
+      "automerge": true
+    },
+    {
+      "description": "core: major updates always need a human",
+      "matchFileNames": ["core/**"],
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["renovate", "major"]
+    },
+    {
+      "description": "Immich ships breaking changes in minors: group server + ML, never automerge",
+      "matchPackageNames": ["ghcr.io/immich-app/**"],
+      "groupName": "immich",
+      "automerge": false
+    },
+    {
+      "description": "Immich database images must follow Immich release notes, not Renovate",
+      "matchPackageNames": ["ghcr.io/immich-app/postgres", "valkey/valkey", "docker.io/valkey/valkey"],
+      "enabled": false
+    },
+    {
+      "description": "Komodo v1->v2 and its MongoDB are a manual migration",
+      "matchPackageNames": ["ghcr.io/moghtech/**", "mongo"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "Mongo stays until the Komodo v2 migration",
+      "matchPackageNames": ["mongo"],
+      "enabled": false
+    }
+  ]
+}

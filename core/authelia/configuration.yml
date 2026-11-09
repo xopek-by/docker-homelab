@@ -1,0 +1,68 @@
+# yaml-language-server: $schema=https://www.authelia.com/schemas/v4.39/json-schema/configuration.json
+# Authelia: single sign-on + 2FA in front of NPM proxy hosts (forward auth) and OIDC later.
+# Secrets come from /secrets/* via *_FILE env vars (see docker-compose.yaml).
+
+theme: auto
+
+server:
+  address: 'tcp://:9091/'
+
+log:
+  level: info
+
+totp:
+  issuer: 'mbuz.uk'
+  period: 30
+  digits: 6
+
+webauthn:
+  disable: false
+  display_name: 'mbuz homelab'
+  # Allow logging in with a passkey instead of password + second factor
+  enable_passkey_login: true
+
+authentication_backend:
+  # Password reset needs a working mail notifier; disabled until SMTP is set up
+  password_reset:
+    disable: true
+  file:
+    # Lives on the host, not in git; holds the argon2 hash of the user's password
+    path: '/data/users_database.yml'
+    watch: true
+    password:
+      algorithm: 'argon2'
+
+access_control:
+  default_policy: 'deny'
+  rules:
+    - domain: 'auth.mbuz.uk'
+      policy: 'bypass'
+    # Everything else behind Authelia requires password + TOTP/passkey
+    - domain: '*.mbuz.uk'
+      policy: 'two_factor'
+
+session:
+  name: 'authelia_session'
+  same_site: 'lax'
+  inactivity: '2h'
+  expiration: '12h'
+  remember_me: '1M'
+  cookies:
+    - domain: 'mbuz.uk'
+      authelia_url: 'https://auth.mbuz.uk'
+      default_redirection_url: 'https://mbuz.uk'
+
+regulation:
+  max_retries: 5
+  find_time: '10m'
+  ban_time: '30m'
+
+storage:
+  local:
+    path: '/data/db.sqlite3'
+
+notifier:
+  # One-time codes (e.g. when registering TOTP/passkey) are written to this file
+  # until an SMTP or other notifier is configured.
+  filesystem:
+    filename: '/data/notification.txt'

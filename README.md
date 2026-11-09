@@ -1,38 +1,50 @@
 # Docker Projects
 
-This directory contains Docker Compose setups for various self-hosted applications. Each project is in its own directory and includes a `docker-compose.yaml` file and any other necessary configuration files.
+Docker Compose stacks for my homelab. Each project lives in its own directory with a `docker-compose.yaml`, a `.env.example` (where variables are needed) and usually a README.
 
-Most of these configurations use `.env` files for environment variables. These were designed to be used with Portainer, but can be used with `docker-compose` as well.
+## Layout
 
-## Current projects
+### `core/` - services in daily use
 
-- [Bookstack](bookstack/README.md)
-- [DDNS Cloudflare](ddns-cloudflare/README.md)
-- [Garmin Grafana](garmin-grafana/README.md)
-- [Guacamole](guacamole/README.md)
-- [Heimdall](heimdall/README.md)
-- [Homepage](homepage/README.md)
-- [Immich](immich/README.md)
-- [IT-Tools](it-tools/README.md)
-- [Mealie](mealie/README.md)
-- [n8n](n8n/README.md)
-- [Nextcloud](nextcloud/README.md)
-- [Nginx Proxy Manager](nginx-proxy-manager/README.md)
-- [pgAdmin](pgadmin/README.md)
-- [Portainer](portainer/README.md)
-- [Seafile](seafile/README.md)
-- [Transmission (haugene-openvpn)](transmission/haugene-openvpn/README.md)
-- [Transmission (lscr.io)](transmission/lscr.io/README.md)
-- [Vaultwarden](vaultwarden/README.md)
-- [Webtop](webtop/README.md)
+- Image versions are pinned to exact tags.
+- Updates arrive as [Renovate](https://docs.renovatebot.com/) pull requests: patch and minor updates are auto-merged after 3 days, major updates are merged manually.
+- Stacks are deployed by [Komodo](https://komo.do/) from this repository.
 
-## Usage
+| Project | Description |
+| --- | --- |
+| [Authelia](core/authelia/README.md) | SSO and 2FA in front of NPM proxy hosts |
+| [DDNS Cloudflare](core/ddns-cloudflare/README.md) | Dynamic DNS updates for Cloudflare |
+| [Homepage](core/homepage/README.md) | Dashboard |
+| [Immich](core/immich/README.md) | Photo and video library |
+| [IT-Tools](core/it-tools/README.md) | Handy tools for developers |
+| [Komodo](core/komodo) | Deployment and management of the stacks |
+| [Nginx Proxy Manager](core/nginx-proxy-manager/README.md) | Reverse proxy |
+| [Transmission (haugene-openvpn)](core/transmission/README.md) | BitTorrent client behind OpenVPN |
+| [Vaultwarden](core/vaultwarden/README.md) | Password manager |
 
-To use these projects, you will need to have Docker and Docker Compose installed. You will also need to create a `.env` file in each project directory with the required environment variables.
+### `lab/` - experiments
 
-Once you have Docker and Docker Compose set up and the `.env` file created, you can start a project using the following command:
+- May use `:latest` and unpinned images.
+- Updated automatically every night by the Komodo Global Auto Update.
+
+| Project | Description |
+| --- | --- |
+| [Bookstack](lab/bookstack/README.md) | Wiki |
+| [Guacamole](lab/guacamole/README.md) | Remote desktop gateway |
+| [Mealie](lab/mealie/README.md) | Recipe manager |
+| [n8n](lab/n8n) | Workflow automation |
+| [Seafile](lab/seafile/README.md) | File sync and share |
+| [Semaphore UI](lab/semaphore-ui) | Ansible UI |
+
+## Configuration
+
+Environment variables are stored in the Environment section of each Komodo stack, not in the repository. The `.env.example` file in each project documents the variables it needs.
+
+## Manual usage
+
+Without Komodo, a project can be started with Docker Compose. Create a `.env` file from `.env.example` and run:
 
 ```
-cd <project_directory>
-docker-compose up -d
+cd core/<project>
+docker compose up -d
 ```

@@ -1,0 +1,28 @@
+name: Renovate
+
+on:
+  schedule:
+    # Daily, before Komodo's 03:00 lab auto-update window is irrelevant; runs at 04:30 UTC
+    - cron: '30 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    container: renovate/renovate:44.224.0
+    timeout-minutes: 30
+    steps:
+      - name: Run Renovate
+        run: renovate
+        env:
+          RENOVATE_PLATFORM: gitea
+          # Direct LAN address: the public git.mbuz.uk is disabled
+          RENOVATE_ENDPOINT: http://10.0.0.108:3000/api/v1
+          RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
+          RENOVATE_REPOSITORIES: Homelab/Docker
+          RENOVATE_GIT_AUTHOR: Renovate Bot <renovate@mbuz.uk>
+          RENOVATE_ONBOARDING: 'false'
+          RENOVATE_REQUIRE_CONFIG: required
+          # Optional read-only GitHub token: release notes in PRs and fewer rate limits
+          RENOVATE_GITHUB_COM_TOKEN: ${{ secrets.GH_READONLY_TOKEN }}
+          LOG_LEVEL: info
