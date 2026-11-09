@@ -1,0 +1,148 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/services/
+
+- Virtualization:
+    - Proxmox:
+        href: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
+        description: Lenovo P520
+        icon: proxmox
+        widget:
+            type: proxmox
+            url: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
+            username: "{{HOMEPAGE_VAR_PROXMOX_PAM}}"
+            password: "{{HOMEPAGE_VAR_PROXMOX_SECRET}}"
+    - Komodo:
+        href: "{{HOMEPAGE_VAR_KOMODO_URL}}"
+        icon: komodo
+        widget:
+            type: komodo
+            url: "{{HOMEPAGE_VAR_KOMODO_URL}}"
+            key: "{{HOMEPAGE_VAR_KOMODO_KEY}}"
+            secret: "{{HOMEPAGE_VAR_KOMODO_SECRET}}"
+            showSummary: true # optional, default: false
+            #showStacks: true # default: false
+
+- Files:
+    - TrueNAS:
+        href: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
+        #description: Storage
+        icon: truenas
+        widget:
+            type: truenas
+            url: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
+            key: "{{HOMEPAGE_VAR_TRUENAS_KEY}}"
+            enablePools: true
+
+    - Transmission:
+        href: "{{HOMEPAGE_VAR_TRANSMISSION_URL}}/"
+        #description: Transmission
+        icon: transmission
+        server: apps
+        container: transmission-openvpn
+        widget:
+            type: transmission
+            url: "{{HOMEPAGE_VAR_TRANSMISSION_URL}}"
+
+    - Immich:
+        href: "{{HOMEPAGE_VAR_IMMICH_URL}}/photos"
+        #description: Photos
+        icon: immich
+        widget:
+            type: immich
+            url: "{{HOMEPAGE_VAR_IMMICH_URL}}"
+            key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
+            version: 2
+
+    - Seafile:
+        href: "{{HOMEPAGE_VAR_SEAFILE_URL}}"
+        description: Documents
+        icon: seafile
+        siteMonitor: "{{HOMEPAGE_VAR_SEAFILE_URL}}"
+
+- Tools & Utilities: 
+    - Zabbix Oracle:
+        href: "{{HOMEPAGE_VAR_ZABBIX_URL}}/"
+        icon: zabbix
+        siteMonitor: "{{HOMEPAGE_VAR_ZABBIX_URL}}"
+        widget:
+            type: zabbix
+            url: "{{HOMEPAGE_VAR_ZABBIX_URL}}"
+            key: "{{HOMEPAGE_VAR_ZABBIX_KEY}}"
+
+    - Gitea:
+        href: "{{HOMEPAGE_VAR_GITEA_URL}}/"
+        description: Local Git server
+        icon: gitea
+        siteMonitor: "{{HOMEPAGE_VAR_GITEA_URL}}/"
+        # widget:
+        #     type: gitea
+        #     url: "{{HOMEPAGE_VAR_GITEA_URL}}"
+        #     key: "{{HOMEPAGE_VAR_GITEA_KEY}}"
+
+    - Grafana:
+        href: "{{HOMEPAGE_VAR_GRAFANA_URL}}/login"
+        description: Proxmox monitoring dashboard
+        icon: grafana
+        siteMonitor: "{{HOMEPAGE_VAR_GRAFANA_URL}}"
+
+    - IT Tools:
+        href: "{{HOMEPAGE_VAR_IT_TOOLS_URL}}"
+        description: Handy things for work
+        icon: it-tools
+        server: apps
+        container: it-tools
+
+    - Vaultwarden:
+        href: "{{HOMEPAGE_VAR_VAULTWARDEN_URL}}"
+        description: Password manager
+        icon: vaultwarden
+        server: apps
+        container: vaultwarden
+
+- Networking:
+    - Nginx Proxy Manager:
+        href: "{{HOMEPAGE_VAR_NPM_URL}}/nginx/proxy"
+        description: Services proxying
+        icon: nginx-proxy-manager
+        widget:
+            type: npm
+            url: "{{HOMEPAGE_VAR_NPM_URL}}"
+            username: "{{HOMEPAGE_VAR_NPM_USER}}"
+            password: "{{HOMEPAGE_VAR_NPM_PASS}}"
+        server: apps
+        container: nginx-proxy-manager
+
+    - AdGuard:
+        href: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
+        icon: adguard-home
+        widget:
+            type: adguard
+            url: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
+            username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
+            password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
+
+    - Landing:
+        href: "{{HOMEPAGE_VAR_MYSITE_URL}}"
+        description: CV website
+        icon: si-biolink
+        siteMonitor: "{{HOMEPAGE_VAR_MYSITE_URL}}"
+
+    # - Remote:
+    #     - Guacamole:
+    #         href: "{{HOMEPAGE_VAR_GUACAMOLE_URL}}"
+    #         icon: guacamole
+    #         server: apps
+    #         container: guacamole
+
+    #     - Webtop:
+    #         href: "{{HOMEPAGE_VAR_WEBTOP_URL}}"
+    #         icon: webtop
+    #         server: apps
+    #         container: webtop
+
+    #     - Lenovo AMT:
+    #         description: Intel AMT remote management for Lenovo
+    #         href: "{{HOMEPAGE_VAR_LENOVO_AMT_URL}}"
+    #         icon: si-intel-#0071C5
+ #           siteMonitor: "{{HOMEPAGE_VAR_LENOVO_AMT_URL}}"

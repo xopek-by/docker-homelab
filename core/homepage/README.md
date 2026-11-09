@@ -1,16 +1,19 @@
 # Homepage
 
-Homepage is a modern, fast, and secure application dashboard. It is highly customizable and can be configured using YAML files or Docker label discovery. The dashboard has integrations for over 100 services and is translated into multiple languages. It is a fully static and proxied application.
+[Homepage](https://gethomepage.dev/) dashboard, deployed as a Komodo stack. The LAN start page is `http://<docker-apps>:3001`.
 
-[Homepage Website](https://gethomepage.dev/)
+## Layout
 
-## How to start
+- `docker-compose.yaml` - homepage plus a read-only `socket-proxy` sidecar (`lscr.io/linuxserver/socket-proxy`).
+  Homepage has no direct `docker.sock` mount; it talks to `socket-proxy:2375`, which exposes only
+  `CONTAINERS`, `INFO`, `PING`, `VERSION` (no POST, no EVENTS).
+- `config/` - homepage config tracked in git, mounted at `/app/config`. Secrets are never stored here;
+  they are `{{HOMEPAGE_VAR_*}}` templates resolved from environment variables.
+- `.env` - not in git, holds the `HOMEPAGE_VAR_*` values (see `.env.example`).
+- Docker integration: only `apps` (through the local sidecar). docker-cloud is not connected on purpose:
+  a Docker API reachable over the LAN, even read-only, leaks container env vars; services there use `siteMonitor`.
 
-1.  Create a `.env` file based on the `.env.example` file.
-2.  Set the `PATH_TO_CONFIG` variable in the `.env` file to the directory where you want to store the configuration files.
-3.  Run `docker-compose up -d` to start the application.
-4.  The application will be available at [http://localhost:3001](http://localhost:3001).
+## Deploy
 
-## Setup
-
-After starting the application, you can configure it by editing the YAML files in the `${PATH_TO_CONFIG}` directory. The documentation for the configuration can be found on the [Homepage website](https://gethomepage.dev/en/configs/).
+1. Create `.env` from `.env.example` (in Komodo: stack environment).
+2. Deploy the stack; edit files in `config/` via git and redeploy/restart to apply.

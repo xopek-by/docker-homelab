@@ -5,16 +5,60 @@ services:
     ports:
       - "3001:3000"
     env_file:
-      - .env # Make sure this file exists and contains necessary environment variables (chek .env.example)
+      - .env # Must exist next to this file (see .env.example)
+    environment:
+      LOG_TARGETS: stdout
     volumes:
-      - ${PATH_TO_CONFIG}:/app/config # Make sure your local config directory exists
-      - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
+      - ./config:/app/config # Config lives in git (core/homepage/config)
     restart: unless-stopped
+    depends_on:
+      - socket-proxy
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000"]
       interval: 30s
       timeout: 10s
       retries: 3
+    networks:
+      - homepage-net
+
+  # Read-only Docker API proxy: homepage never touches docker.sock directly.
+  socket-proxy:
+    image: lscr.io/linuxserver/socket-proxy:3.4.7-r0-ls105
+    container_name: homepage-socket-proxy
+    environment:
+      CONTAINERS: 1
+      INFO: 1
+      PING: 1
+      VERSION: 1
+      EVENTS: 0
+      POST: 0
+      ALLOW_START: 0
+      ALLOW_STOP: 0
+      ALLOW_RESTARTS: 0
+      AUTH: 0
+      BUILD: 0
+      COMMIT: 0
+      CONFIGS: 0
+      DISTRIBUTION: 0
+      EXEC: 0
+      GRPC: 0
+      IMAGES: 0
+      NETWORKS: 0
+      NODES: 0
+      PLUGINS: 0
+      SECRETS: 0
+      SERVICES: 0
+      SESSION: 0
+      SWARM: 0
+      SYSTEM: 0
+      TASKS: 0
+      VOLUMES: 0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    tmpfs:
+      - /run
+    read_only: true
+    restart: unless-stopped
     networks:
       - homepage-net
 

@@ -1,0 +1,12 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/docker/
+
+# Local Docker host (docker-apps) via the read-only socket-proxy sidecar
+# defined in docker-compose.yaml (no direct docker.sock mount).
+apps:
+  host: socket-proxy
+  port: 2375
+
+# docker-cloud is intentionally not connected: exposing its Docker API on the LAN
+# (even read-only) would leak container env vars via inspect. Use siteMonitor there.

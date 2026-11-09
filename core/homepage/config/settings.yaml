@@ -1,0 +1,25 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/settings/
+
+# layout:
+#   Virtualization:
+#     style: column
+#     columns: 3
+  
+#   Files:
+#     style: column
+#     columns: 3
+
+#   Networking:
+#     style: column
+#     columns: 3
+
+#   Monitoring:
+#     style: column
+#     columns: 3
+
+
+
+
+theme: dark
