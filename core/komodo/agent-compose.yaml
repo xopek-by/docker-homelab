@@ -1,13 +1,18 @@
+# Remote Komodo Periphery (docker-cloud). Inbound mode: Core connects to :8120.
 services:
   periphery:
-    image: ghcr.io/moghtech/komodo-periphery:latest
+    image: ghcr.io/moghtech/komodo-periphery:2.3.4
+    # v2: reap zombie processes
+    init: true
     container_name: komodo-periphery
     restart: unless-stopped
     ports:
       - "8120:8120"
     env_file:
-      - .env
+      - .env # PERIPHERY_CORE_PUBLIC_KEY pins the trusted Core (see .env.example)
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /proc:/proc
       - /etc/komodo:/etc/komodo
+      # v2 periphery key pair must survive container re-creation
+      - /etc/komodo/keys:/config/keys

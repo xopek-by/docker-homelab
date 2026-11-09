@@ -23,7 +23,9 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${KOMODO_DB_PASSWORD}
   
   core:
-    image: ghcr.io/moghtech/komodo-core:${COMPOSE_KOMODO_IMAGE_TAG:-1.19.1}
+    image: ghcr.io/moghtech/komodo-core:${COMPOSE_KOMODO_IMAGE_TAG:-2.3.4}
+    # v2: reap zombie processes
+    init: true
     container_name: komodo-core
     labels:
       komodo.skip: # Prevent Komodo from stopping with StopAllContainers
@@ -42,6 +44,8 @@ services:
       ## Store dated backups of the database - https://komo.do/docs/setup/backup
       ## No need to have bind mounts because of the ability to create backups on a separate volume
       - ${COMPOSE_KOMODO_BACKUPS_PATH}:/backups
+      ## v2 core key pair (PKI towards periphery)
+      - core-keys:/config/keys
       ## Store sync files on server
       # - /path/to/syncs:/syncs
       ## Optionally mount a custom core.config.toml
@@ -55,7 +59,9 @@ services:
   ## or deploy the Periphery binary with systemd using 
   ## https://github.com/moghtech/komodo/tree/main/scripts
   periphery:
-    image: ghcr.io/moghtech/komodo-periphery:${COMPOSE_KOMODO_IMAGE_TAG:-1.19.1}
+    image: ghcr.io/moghtech/komodo-periphery:${COMPOSE_KOMODO_IMAGE_TAG:-2.3.4}
+    # v2: reap zombie processes
+    init: true
     container_name: komodo-periphery
     labels:
       komodo.skip: # Prevent Komodo from stopping with StopAllContainers
@@ -72,8 +78,13 @@ services:
       ## or docker will get confused. See https://github.com/moghtech/komodo/discussions/180.
       ## Default: /etc/komodo.
       - ${PERIPHERY_ROOT_DIRECTORY:-/etc/komodo}:${PERIPHERY_ROOT_DIRECTORY:-/etc/komodo}
+      ## v2 periphery key pair
+      - periphery-keys:/config/keys
 
 volumes:
   # Mongo
   mongo-data:
   mongo-config:
+  # Komodo v2 key pairs
+  core-keys:
+  periphery-keys:
