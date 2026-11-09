@@ -12,6 +12,7 @@ Docker Compose stacks for my homelab. Each project lives in its own directory wi
 
 | Project | Description |
 | --- | --- |
+| [AdGuard Home sync](core/adguardhome-sync/README.md) | Keeps the Pi and CT104 AdGuard instances in sync |
 | [Authelia](core/authelia/README.md) | SSO and 2FA in front of NPM proxy hosts |
 | [DDNS Cloudflare](core/ddns-cloudflare/README.md) | Dynamic DNS updates for Cloudflare |
 | [Homepage](core/homepage/README.md) | Dashboard |

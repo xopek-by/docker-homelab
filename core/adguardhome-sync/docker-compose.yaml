@@ -1,0 +1,32 @@
+# Keeps the two AdGuard Home instances identical.
+# Origin: Raspberry Pi (10.0.0.5) - edit filters/rules/rewrites/upstreams THERE.
+# Replica: CT104 (10.0.0.104) - gets overwritten every sync, except DHCP.
+services:
+  adguardhome-sync:
+    image: ghcr.io/bakito/adguardhome-sync:v0.9.6
+    container_name: adguardhome-sync
+    restart: unless-stopped
+    command: run
+    environment:
+      ORIGIN_URL: "http://10.0.0.5"
+      ORIGIN_USERNAME: "sync"
+      ORIGIN_PASSWORD: "${SYNC_PASSWORD:?set in Komodo stack environment}"
+      REPLICA1_URL: "http://10.0.0.104"
+      REPLICA1_USERNAME: "sync"
+      REPLICA1_PASSWORD: "${SYNC_PASSWORD}"
+      CRON: "*/10 * * * *"
+      RUN_ON_START: "true"
+      # No web UI / API
+      API_PORT: "0"
+      # DHCP lives only on CT104 (different role per instance); TLS is not used
+      FEATURES_DHCP_SERVER_CONFIG: "false"
+      FEATURES_DHCP_STATIC_LEASES: "false"
+      FEATURES_TLS_CONFIG: "false"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 64M
