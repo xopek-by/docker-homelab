@@ -1,0 +1,41 @@
+# n8n: automations, notification hub (Komodo -> Telegram) and the future homelab assistant.
+# UI: https://automate.mbuz.uk (behind Authelia in NPM); /webhook/* is public for inbound webhooks.
+services:
+  n8n:
+    image: n8nio/n8n:2.46.7
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      # LAN only: services on other hosts (Komodo, Proxmox) post webhooks here
+      - "10.0.0.101:5678:5678"
+    environment:
+      TZ: Europe/Warsaw
+      GENERIC_TIMEZONE: Europe/Warsaw
+      NODE_ENV: production
+      N8N_HOST: automate.mbuz.uk
+      N8N_PROTOCOL: https
+      N8N_PORT: "5678"
+      WEBHOOK_URL: https://automate.mbuz.uk/
+      # Behind NPM
+      N8N_PROXY_HOPS: "1"
+      N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
+      N8N_RUNNERS_ENABLED: "true"
+      # No telemetry
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      # Keep the SQLite DB small: drop execution history older than 14 days
+      EXECUTIONS_DATA_PRUNE: "true"
+      EXECUTIONS_DATA_MAX_AGE: "336"
+    volumes:
+      # Holds database.sqlite and the credentials encryption key (config) - back it up
+      - /opt/docker_data/n8n/app:/home/node/.n8n
+      - /opt/docker_data/n8n/files:/files
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:5678/healthz || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 2m
+    deploy:
+      resources:
+        limits:
+          memory: 1G

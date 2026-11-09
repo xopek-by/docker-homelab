@@ -1,4 +1,4 @@
-# Docker Projects
+﻿# Docker Projects
 
 Docker Compose stacks for my homelab. Each project lives in its own directory with a `docker-compose.yaml`, a `.env.example` (where variables are needed) and usually a README.
 
@@ -19,6 +19,7 @@ Docker Compose stacks for my homelab. Each project lives in its own directory wi
 | [Immich](core/immich/README.md) | Photo and video library |
 | [IT-Tools](core/it-tools/README.md) | Handy tools for developers |
 | [Komodo](core/komodo) | Deployment and management of the stacks |
+| [n8n](core/n8n/README.md) | Automations, notification hub, homelab assistant |
 | [Nginx Proxy Manager](core/nginx-proxy-manager/README.md) | Reverse proxy |
 | [Transmission (haugene-openvpn)](core/transmission/README.md) | BitTorrent client behind OpenVPN |
 | [Vaultwarden](core/vaultwarden/README.md) | Password manager |
@@ -33,7 +34,6 @@ Docker Compose stacks for my homelab. Each project lives in its own directory wi
 | [Bookstack](lab/bookstack/README.md) | Wiki |
 | [Guacamole](lab/guacamole/README.md) | Remote desktop gateway |
 | [Mealie](lab/mealie/README.md) | Recipe manager |
-| [n8n](lab/n8n) | Workflow automation |
 | [Seafile](lab/seafile/README.md) | File sync and share |
 | [Semaphore UI](lab/semaphore-ui) | Ansible UI |
 
