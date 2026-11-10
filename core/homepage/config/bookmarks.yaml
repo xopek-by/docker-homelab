@@ -1,78 +1,60 @@
 ---
 # For configuration options and examples, please see:
 # https://gethomepage.dev/configs/bookmarks
+# Four groups of four links each, so the columns line up.
 
-- Info:
-  - Github Homelab:
-    - icon: github
-      href: https://github.com/xopek-by/homelab
-      description: Personal Homelab repo
-
-  - Homelab Wiki:
-    - abbr: WK
-      href: https://docs.xopek.co.uk/
-      description: Homelab documentation
-
-  - Homepage  Docs:
-    - icon: homepage
-      href: https://gethomepage.dev/
-      description: Homepage documentation
-
-  - Simple icons:
-    - icon: si-simpleicons-#111111
-      href: https://simpleicons.org/
-
-  - Disk Prices:
-    - abbr: DP
-      href: https://diskprices.com/?locale=us&condition=new,used&disk_types=internal_hdd,internal_hdd25,internal_ssd,m2_ssd,m2_nvme
-      description: HDDs + SSDs per TB
-
-- Management:
+- Infrastructure:
     - Oracle Cloud:
         - icon: oracle
           href: https://cloud.oracle.com/
-
     - Cloudflare:
         - icon: cloudflare
           href: https://dash.cloudflare.com/
-
     - Router:
         - icon: router
           href: http://10.0.0.10/
-
-    - TailScale:
+    - Tailscale:
         - icon: tailscale
           href: https://login.tailscale.com/admin/machines
 
-- Chat bots:
-  - ChatGPT:
-    - icon: chatgpt
-      href: https://chatgpt.com/
-      description: ChatGPT
+- AI:
+    - Claude:
+        - icon: si-claude
+          href: https://claude.ai/
+    - ChatGPT:
+        - icon: chatgpt
+          href: https://chatgpt.com/
+    - Gemini:
+        - icon: si-googlegemini
+          href: https://gemini.google.com/app?hl=en
+    - DeepSeek:
+        - abbr: DS
+          href: https://chat.deepseek.com/
 
-  - DeepSeek:
-    - abbr: DS
-      href: https://chat.deepseek.com/
-      description: DeepSeek Chat
-
-  - Gemini:
-    - icon: si-googlegemini
-      href: https://gemini.google.com/app?hl=en
-      description: Gemini chat
-
-- Useful:
-    # - Vaultwarden:
-    #   - icon: vaultwarden
-    #     href: https://pass.mbuz.uk/
-
-    # - IT-Tools:
-    #   - icon: it-tools
-    #     href: http://10.0.0.101:8182/
-
+- Dev:
+    - GitHub Homelab:
+        - icon: github
+          href: https://github.com/xopek-by/homelab
     - Oh Shit Git:
-      - icon: git
-        href: https://ohshitgit.com/
-  
+        - icon: git
+          href: https://ohshitgit.com/
     - Git Cheatsheet:
-      - icon: gitlab
-        href: https://about.gitlab.com/images/press/git-cheat-sheet.pdf
+        - icon: gitlab
+          href: https://about.gitlab.com/images/press/git-cheat-sheet.pdf
+    - Simple Icons:
+        - icon: si-simpleicons
+          href: https://simpleicons.org/
+
+- Reference:
+    - Homelab Wiki:
+        - abbr: WK
+          href: https://docs.xopek.co.uk/
+    - Homepage Docs:
+        - icon: homepage
+          href: https://gethomepage.dev/
+    - Proxmox Scripts:
+        - icon: proxmox
+          href: https://community-scripts.github.io/ProxmoxVE/
+    - Disk Prices:
+        - abbr: DP
+          href: https://diskprices.com/?locale=us&condition=new,used&disk_types=internal_hdd,internal_hdd25,internal_ssd,m2_ssd,m2_nvme

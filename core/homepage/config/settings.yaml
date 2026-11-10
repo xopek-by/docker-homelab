@@ -2,24 +2,26 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/configs/settings/
 
-# layout:
-#   Virtualization:
-#     style: column
-#     columns: 3
-  
-#   Files:
-#     style: column
-#     columns: 3
-
-#   Networking:
-#     style: column
-#     columns: 3
-
-#   Monitoring:
-#     style: column
-#     columns: 3
-
-
-
-
+title: Homelab
 theme: dark
+color: slate
+headerStyle: clean
+statusStyle: dot        # small status dot instead of "176 MS" / "UNKNOWN" badges
+hideVersion: true
+useEqualHeights: true   # cards in the same row get the same height
+
+quicklaunch:
+  searchDescriptions: true
+  hideInternetSearch: false
+
+# Two service blocks without titles: a 4x2 grid of widget cards on top,
+# a single row of 6 plain launcher tiles below. Bookmarks follow as 4 columns.
+layout:
+  Overview:
+    style: row
+    columns: 4
+    header: false
+  Apps:
+    style: row
+    columns: 6
+    header: false

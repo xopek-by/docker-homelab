@@ -1,8 +1,11 @@
 ---
 # For configuration options and examples, please see:
 # https://gethomepage.dev/configs/services/
+# Layout (grid sizes, hidden headers) lives in settings.yaml.
 
-- Virtualization:
+# 8 cards with live widgets -> 4 columns x 2 rows.
+- Overview:
+    # Row 1: compute and monitoring
     - Proxmox:
         href: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
         description: Lenovo P520
@@ -12,57 +15,21 @@
             url: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
             username: "{{HOMEPAGE_VAR_PROXMOX_PAM}}"
             password: "{{HOMEPAGE_VAR_PROXMOX_SECRET}}"
+
     - Komodo:
         href: https://komodo.mbuz.uk
+        description: Docker stacks
         icon: komodo
         widget:
             type: komodo
             url: "{{HOMEPAGE_VAR_KOMODO_URL}}"
             key: "{{HOMEPAGE_VAR_KOMODO_KEY}}"
             secret: "{{HOMEPAGE_VAR_KOMODO_SECRET}}"
-            showSummary: true # optional, default: false
-            #showStacks: true # default: false
+            showSummary: true
 
-- Files:
-    - TrueNAS:
-        href: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
-        #description: Storage
-        icon: truenas
-        widget:
-            type: truenas
-            url: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
-            key: "{{HOMEPAGE_VAR_TRUENAS_KEY}}"
-            enablePools: true
-
-    - Transmission:
-        href: "{{HOMEPAGE_VAR_TRANSMISSION_URL}}/"
-        #description: Transmission
-        icon: transmission
-        server: apps
-        container: transmission-openvpn
-        widget:
-            type: transmission
-            url: "{{HOMEPAGE_VAR_TRANSMISSION_URL}}"
-
-    - Immich:
-        href: "{{HOMEPAGE_VAR_IMMICH_URL}}/photos"
-        #description: Photos
-        icon: immich
-        widget:
-            type: immich
-            url: "{{HOMEPAGE_VAR_IMMICH_URL}}"
-            key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
-            version: 2
-
-    - Seafile:
-        href: "{{HOMEPAGE_VAR_SEAFILE_URL}}"
-        description: Documents
-        icon: seafile
-        siteMonitor: "{{HOMEPAGE_VAR_SEAFILE_URL}}"
-
-- Tools & Utilities: 
-    - Zabbix Oracle:
+    - Zabbix:
         href: "{{HOMEPAGE_VAR_ZABBIX_URL}}/"
+        description: Monitoring
         icon: zabbix
         siteMonitor: "{{HOMEPAGE_VAR_ZABBIX_URL}}"
         widget:
@@ -70,51 +37,9 @@
             url: "{{HOMEPAGE_VAR_ZABBIX_URL}}"
             key: "{{HOMEPAGE_VAR_ZABBIX_KEY}}"
 
-    - Gitea:
-        href: "{{HOMEPAGE_VAR_GITEA_URL}}/"
-        description: Local Git server
-        icon: gitea
-        siteMonitor: "{{HOMEPAGE_VAR_GITEA_URL}}/"
-        # widget:
-        #     type: gitea
-        #     url: "{{HOMEPAGE_VAR_GITEA_URL}}"
-        #     key: "{{HOMEPAGE_VAR_GITEA_KEY}}"
-
-    - Grafana:
-        href: "{{HOMEPAGE_VAR_GRAFANA_URL}}/login"
-        description: Proxmox monitoring dashboard
-        icon: grafana
-        siteMonitor: "{{HOMEPAGE_VAR_GRAFANA_URL}}"
-
-    - IT Tools:
-        href: "{{HOMEPAGE_VAR_IT_TOOLS_URL}}"
-        description: Handy things for work
-        icon: it-tools
-        server: apps
-        container: it-tools
-
-    - Vaultwarden:
-        href: "{{HOMEPAGE_VAR_VAULTWARDEN_URL}}"
-        description: Password manager
-        icon: vaultwarden
-        server: apps
-        container: vaultwarden
-
-- Networking:
-    - Nginx Proxy Manager:
-        href: "{{HOMEPAGE_VAR_NPM_URL}}/nginx/proxy"
-        description: Services proxying
-        icon: nginx-proxy-manager
-        widget:
-            type: npm
-            url: "{{HOMEPAGE_VAR_NPM_URL}}"
-            username: "{{HOMEPAGE_VAR_NPM_USER}}"
-            password: "{{HOMEPAGE_VAR_NPM_PASS}}"
-        server: apps
-        container: nginx-proxy-manager
-
     - AdGuard:
         href: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
+        description: DNS & DHCP
         icon: adguard-home
         widget:
             type: adguard
@@ -122,27 +47,86 @@
             username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
             password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
 
+    # Row 2: storage, media and edge
+    - TrueNAS:
+        href: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
+        description: Storage
+        icon: truenas
+        widget:
+            type: truenas
+            url: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
+            key: "{{HOMEPAGE_VAR_TRUENAS_KEY}}"
+            # Pool bars make this card twice as tall as its neighbours; pool usage is in Zabbix
+            enablePools: false
+
+    - Immich:
+        href: "{{HOMEPAGE_VAR_IMMICH_URL}}/photos"
+        description: Photos
+        icon: immich
+        widget:
+            type: immich
+            url: "{{HOMEPAGE_VAR_IMMICH_URL}}"
+            key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
+            version: 2
+
+    - Transmission:
+        href: "{{HOMEPAGE_VAR_TRANSMISSION_URL}}/"
+        description: Torrents via VPN
+        icon: transmission
+        server: apps
+        container: transmission-openvpn
+        widget:
+            type: transmission
+            url: "{{HOMEPAGE_VAR_TRANSMISSION_URL}}"
+
+    - Nginx Proxy Manager:
+        href: "{{HOMEPAGE_VAR_NPM_URL}}/nginx/proxy"
+        description: Reverse proxy
+        icon: nginx-proxy-manager
+        server: apps
+        container: nginx-proxy-manager
+        widget:
+            type: npm
+            url: "{{HOMEPAGE_VAR_NPM_URL}}"
+            username: "{{HOMEPAGE_VAR_NPM_USER}}"
+            password: "{{HOMEPAGE_VAR_NPM_PASS}}"
+
+# 6 plain launcher tiles -> one row of 6.
+- Apps:
+    - Gitea:
+        href: "{{HOMEPAGE_VAR_GITEA_URL}}/"
+        description: Git server
+        icon: gitea
+        siteMonitor: "{{HOMEPAGE_VAR_GITEA_URL}}/"
+
+    - Grafana:
+        href: "{{HOMEPAGE_VAR_GRAFANA_URL}}/login"
+        description: Dashboards
+        icon: grafana
+        siteMonitor: "{{HOMEPAGE_VAR_GRAFANA_URL}}"
+
+    - Vaultwarden:
+        href: "{{HOMEPAGE_VAR_VAULTWARDEN_URL}}"
+        description: Passwords
+        icon: vaultwarden
+        server: apps
+        container: vaultwarden
+
+    - Seafile:
+        href: "{{HOMEPAGE_VAR_SEAFILE_URL}}"
+        description: Documents
+        icon: seafile
+        siteMonitor: "{{HOMEPAGE_VAR_SEAFILE_URL}}"
+
+    - IT Tools:
+        href: "{{HOMEPAGE_VAR_IT_TOOLS_URL}}"
+        description: Dev toolbox
+        icon: it-tools
+        server: apps
+        container: it-tools
+
     - Landing:
         href: "{{HOMEPAGE_VAR_MYSITE_URL}}"
         description: CV website
         icon: si-biolink
         siteMonitor: "{{HOMEPAGE_VAR_MYSITE_URL}}"
-
-    # - Remote:
-    #     - Guacamole:
-    #         href: "{{HOMEPAGE_VAR_GUACAMOLE_URL}}"
-    #         icon: guacamole
-    #         server: apps
-    #         container: guacamole
-
-    #     - Webtop:
-    #         href: "{{HOMEPAGE_VAR_WEBTOP_URL}}"
-    #         icon: webtop
-    #         server: apps
-    #         container: webtop
-
-    #     - Lenovo AMT:
-    #         description: Intel AMT remote management for Lenovo
-    #         href: "{{HOMEPAGE_VAR_LENOVO_AMT_URL}}"
-    #         icon: si-intel-#0071C5
- #           siteMonitor: "{{HOMEPAGE_VAR_LENOVO_AMT_URL}}"
