@@ -5,7 +5,7 @@
 
 # ===== Tab "Home" =====
 
-# Hypervisor, stacks, monitoring, DNS -> one row of 4.
+# Hypervisor, backups, storage, stacks -> one row of 4.
 - Core:
     - Proxmox:
         href: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
@@ -16,6 +16,29 @@
             url: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
             username: "{{HOMEPAGE_VAR_PROXMOX_PAM}}"
             password: "{{HOMEPAGE_VAR_PROXMOX_SECRET}}"
+
+    - Proxmox Backup:
+        href: https://10.0.0.201:8007
+        description: Backups
+        icon: proxmox
+        widget:
+            type: proxmoxbackupserver
+            url: https://10.0.0.201:8007
+            # Read-only token: homepage@pbs!homepage with Audit on /
+            username: homepage@pbs!homepage
+            password: "{{HOMEPAGE_VAR_PBS_TOKEN}}"
+
+    - TrueNAS:
+        href: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
+        description: Storage
+        icon: truenas
+        widget:
+            type: truenas
+            url: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
+            key: "{{HOMEPAGE_VAR_TRUENAS_KEY}}"
+            # Pool usage bars (boot-pool, cold, external)
+            enablePools: true
+            nasType: scale
 
     - Komodo:
         href: https://komodo.mbuz.uk
@@ -28,6 +51,46 @@
             secret: "{{HOMEPAGE_VAR_KOMODO_SECRET}}"
             showSummary: true
 
+# Live graphs of the PVE host from Glances (REST API on 10.0.0.1:61208, password-protected).
+- Host:
+    - CPU:
+        widget:
+            type: glances
+            url: http://10.0.0.1:61208
+            username: glances
+            password: "{{HOMEPAGE_VAR_GLANCES_PASS}}"
+            version: 4
+            metric: cpu
+
+    - Memory:
+        widget:
+            type: glances
+            url: http://10.0.0.1:61208
+            username: glances
+            password: "{{HOMEPAGE_VAR_GLANCES_PASS}}"
+            version: 4
+            metric: memory
+
+    - Network:
+        widget:
+            type: glances
+            url: http://10.0.0.1:61208
+            username: glances
+            password: "{{HOMEPAGE_VAR_GLANCES_PASS}}"
+            version: 4
+            metric: network:vmbr0
+
+    - Temperature:
+        widget:
+            type: glances
+            url: http://10.0.0.1:61208
+            username: glances
+            password: "{{HOMEPAGE_VAR_GLANCES_PASS}}"
+            version: 4
+            metric: "sensor:Package id 0"
+
+# Monitoring, edge and apps with live widgets -> one row of 5.
+- Services:
     - Zabbix:
         href: "{{HOMEPAGE_VAR_ZABBIX_URL}}/"
         description: Monitoring
@@ -47,20 +110,6 @@
             url: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
             username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
             password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
-
-# Storage, edge and apps with live widgets -> one row of 4.
-- Services:
-    - TrueNAS:
-        href: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
-        description: Storage
-        icon: truenas
-        widget:
-            type: truenas
-            url: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
-            key: "{{HOMEPAGE_VAR_TRUENAS_KEY}}"
-            # Pool usage bars (boot-pool, cold, external)
-            enablePools: true
-            nasType: scale
 
     - Nginx Proxy Manager:
         href: "{{HOMEPAGE_VAR_NPM_URL}}/nginx/proxy"

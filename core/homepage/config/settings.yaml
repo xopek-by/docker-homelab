@@ -16,7 +16,7 @@ quicklaunch:
 
 # Two tabs. Every group (services and bookmarks) is pinned to a tab, so nothing
 # leaks onto both. Headers are hidden: the tab name already says what it is.
-#   Home:  infrastructure widgets (4 + 4), launcher tiles, bookmarks
+#   Home:  core widgets (4), host graphs (4), service widgets (5), launchers (5), bookmarks
 #   Media: what is playing/downloading, the *arr pipeline, then calendar + queues
 layout:
   Core:
@@ -24,10 +24,15 @@ layout:
     style: row
     columns: 4
     header: false
-  Services:
+  Host:
     tab: Home
     style: row
     columns: 4
+    header: false
+  Services:
+    tab: Home
+    style: row
+    columns: 5
     header: false
   Apps:
     tab: Home
