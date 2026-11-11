@@ -150,6 +150,7 @@
 # Gdansk outside: air quality, today/tomorrow forecast, daylight (Open-Meteo, no API key).
 - Outside:
     - Air quality:
+        href: https://www.iqair.com/poland/pomerania/gdansk
         description: European AQI, µg/m³
         icon: mdi-air-filter
         widget:
@@ -171,6 +172,7 @@
                   format: float
 
     - Today:
+        href: https://www.yr.no/en/forecast/daily-table/2-3099434/Poland/Pomerania/Gda%C5%84sk/Gda%C5%84sk
         description: Gdansk forecast
         icon: mdi-weather-partly-cloudy
         widget:
@@ -195,6 +197,7 @@
                   suffix: " km/h"
 
     - Tomorrow:
+        href: https://www.yr.no/en/forecast/daily-table/2-3099434/Poland/Pomerania/Gda%C5%84sk/Gda%C5%84sk
         description: Gdansk forecast
         icon: mdi-weather-partly-cloudy
         widget:
@@ -219,6 +222,7 @@
                   suffix: " km/h"
 
     - Daylight:
+        href: https://www.timeanddate.com/sun/poland/gdansk
         description: Sunrise and sunset today
         icon: mdi-weather-sunset
         widget:

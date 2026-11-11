@@ -132,44 +132,33 @@ li.service {
   min-height: 8rem;
 }
 
-/* ---------- Per-card accents ----------
-   Colour follows the brand where there is one, so cards are recognisable at a glance.
-   The tint is low (0.16-0.20): the page stays dark, colour only "glows" from the corner. */
-li.service[data-name] { --hl-tint: 0.16; }
+/* ---------- Accents ----------
+   Cards stay one calm glass colour. Brand colour shows only on hover (border + glow),
+   all graphs share one teal accent that matches the background glow. */
+li.service[data-name] { --hl-tint: 0; }
+li[data-name="CPU"], li[data-name="Memory"], li[data-name="Temperature"], li[data-name="NVMe disk"] {
+  --color-500: 45 212 191;
+  --color-700: 20 184 166;
+}
 
-/* Hypervisor: Proxmox orange family; charts recoloured through the theme variables */
-li[data-name="Proxmox"]        { --hl-accent: 229 112 0; }
-li[data-name="CPU"]            { --hl-accent: 249 115 22;  --color-500: 249 115 22;  --color-700: 194 65 12; }
-li[data-name="Memory"]         { --hl-accent: 251 146 60;  --color-500: 251 146 60;  --color-700: 234 88 12; }
-li[data-name="Temperature"]    { --hl-accent: 239 68 68;   --color-500: 248 113 113; --color-700: 220 38 38; }
-
-/* Storage */
-li[data-name="TrueNAS"]        { --hl-accent: 14 165 233; }
-li[data-name="Proxmox Backup"] { --hl-accent: 229 112 0; }
-li[data-name="Immich"]         { --hl-accent: 192 132 252; }
-li[data-name="NVMe disk"]      { --hl-accent: 34 211 238;  --color-500: 34 211 238;  --color-700: 8 145 178; }
-
-/* Platform */
+li[data-name="Proxmox"], li[data-name="Proxmox Backup"] { --hl-accent: 229 112 0; }
+li[data-name="TrueNAS"]             { --hl-accent: 14 165 233; }
+li[data-name="Immich"]              { --hl-accent: 192 132 252; }
 li[data-name="Komodo"]              { --hl-accent: 45 212 191; }
 li[data-name="Gitea"]               { --hl-accent: 132 204 22; }
 li[data-name="AdGuard"]             { --hl-accent: 74 222 128; }
 li[data-name="Nginx Proxy Manager"] { --hl-accent: 244 114 182; }
 li[data-name="Zabbix"]              { --hl-accent: 239 68 68; }
-
-/* Outside: weather moods */
-li[data-name="Air quality"] { --hl-accent: 16 185 129;  --hl-tint: 0.22; }
-li[data-name="Today"]       { --hl-accent: 251 191 36;  --hl-tint: 0.22; }
-li[data-name="Tomorrow"]    { --hl-accent: 56 189 248;  --hl-tint: 0.22; }
-li[data-name="Daylight"]    { --hl-accent: 249 115 22;  --hl-tint: 0.24; }
-li[data-name="Daylight"] .service-card {
-  background:
-    linear-gradient(135deg, rgba(249, 115, 22, 0.24), rgba(236, 72, 153, 0.14) 45%, transparent 75%),
-    var(--hl-glass) !important;
-}
+li[data-name="Air quality"]         { --hl-accent: 16 185 129; }
+li[data-name="Today"]               { --hl-accent: 251 191 36; }
+li[data-name="Tomorrow"]            { --hl-accent: 56 189 248; }
+li[data-name="Daylight"]            { --hl-accent: 249 115 22; }
+/* Weather icons keep a small colour point */
 li[data-name="Air quality"] .service-icon [style*="mask"] { background: #34d399 !important; }
 li[data-name="Today"] .service-icon [style*="mask"]       { background: #fbbf24 !important; }
 li[data-name="Tomorrow"] .service-icon [style*="mask"]    { background: #38bdf8 !important; }
-li[data-name="Daylight"] .service-icon [style*="mask"]    { background: linear-gradient(135deg, #fb923c, #f472b6) !important; }
+li[data-name="Daylight"] .service-icon [style*="mask"]    { background: #fb923c !important; }
+
 /* Sunrise / sunset come as "2026-11-11T07:06": show only the HH:MM tail */
 li[data-name="Daylight"] .service-block:nth-child(-n+2) > div:first-child {
   width: 4.45ch;
