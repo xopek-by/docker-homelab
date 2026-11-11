@@ -1,11 +1,12 @@
 ---
 # For configuration options and examples, please see:
 # https://gethomepage.dev/configs/services/
-# Layout (grid sizes, hidden headers) lives in settings.yaml.
+# Layout (tabs, grid sizes, hidden headers) lives in settings.yaml.
 
-# 8 cards with live widgets -> 4 columns x 2 rows.
-- Overview:
-    # Row 1: compute and monitoring
+# ===== Tab "Home" =====
+
+# Hypervisor, storage, stacks, monitoring -> one row of 4.
+- Core:
     - Proxmox:
         href: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
         description: Lenovo P520
@@ -37,17 +38,6 @@
             url: "{{HOMEPAGE_VAR_ZABBIX_URL}}"
             key: "{{HOMEPAGE_VAR_ZABBIX_KEY}}"
 
-    - AdGuard:
-        href: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
-        description: DNS & DHCP
-        icon: adguard-home
-        widget:
-            type: adguard
-            url: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
-            username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
-            password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
-
-    # Row 2: storage, media and edge
     - TrueNAS:
         href: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
         description: Storage
@@ -59,25 +49,17 @@
             # Pool bars make this card twice as tall as its neighbours; pool usage is in Zabbix
             enablePools: false
 
-    - Immich:
-        href: "{{HOMEPAGE_VAR_IMMICH_URL}}/photos"
-        description: Photos
-        icon: immich
+# Network edge and the one user-facing app with a live widget -> one row of 3.
+- Services:
+    - AdGuard:
+        href: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
+        description: DNS & DHCP
+        icon: adguard-home
         widget:
-            type: immich
-            url: "{{HOMEPAGE_VAR_IMMICH_URL}}"
-            key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
-            version: 2
-
-    - Transmission:
-        href: "{{HOMEPAGE_VAR_TRANSMISSION_URL}}/"
-        description: Torrents via VPN
-        icon: transmission
-        server: apps
-        container: transmission-openvpn
-        widget:
-            type: transmission
-            url: "{{HOMEPAGE_VAR_TRANSMISSION_URL}}"
+            type: adguard
+            url: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
+            username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
+            password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
 
     - Nginx Proxy Manager:
         href: "{{HOMEPAGE_VAR_NPM_URL}}/nginx/proxy"
@@ -91,85 +73,15 @@
             username: "{{HOMEPAGE_VAR_NPM_USER}}"
             password: "{{HOMEPAGE_VAR_NPM_PASS}}"
 
-# Media stack (lab/media): 5 widget cards in one row.
-- Media:
-    - Plex:
-        href: http://10.0.0.101:32400/web
-        description: Movies & TV
-        icon: plex
-        server: apps
-        container: plex
+    - Immich:
+        href: "{{HOMEPAGE_VAR_IMMICH_URL}}/photos"
+        description: Photos
+        icon: immich
         widget:
-            type: plex
-            url: http://10.0.0.101:32400
-            key: "{{HOMEPAGE_VAR_PLEX_KEY}}"
-
-    - Seerr:
-        href: https://seerr.mbuz.uk
-        description: Requests
-        icon: overseerr
-        server: apps
-        container: seerr
-        widget:
-            type: overseerr
-            url: http://10.0.0.101:5055
-            key: "{{HOMEPAGE_VAR_SEERR_KEY}}"
-
-    - Radarr:
-        href: https://radarr.mbuz.uk
-        description: Movies
-        icon: radarr
-        server: apps
-        container: radarr
-        widget:
-            type: radarr
-            url: http://radarr:7878
-            key: "{{HOMEPAGE_VAR_RADARR_KEY}}"
-            enableQueue: true
-
-    - Sonarr:
-        href: https://sonarr.mbuz.uk
-        description: TV shows
-        icon: sonarr
-        server: apps
-        container: sonarr
-        widget:
-            type: sonarr
-            url: http://sonarr:8989
-            key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
-            enableQueue: true
-
-    - Prowlarr:
-        href: https://prowlarr.mbuz.uk
-        description: Indexers
-        icon: prowlarr
-        server: apps
-        container: prowlarr
-        widget:
-            type: prowlarr
-            url: http://prowlarr:9696
-            key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
-
-# Upcoming movie releases and episodes from Radarr/Sonarr.
-- Upcoming:
-    - Calendar:
-        widget:
-            type: calendar
-            view: agenda
-            maxEvents: 8
-            showTime: false
-            timezone: Europe/Warsaw
-            integrations:
-                - type: radarr
-                  service_group: Media
-                  service_name: Radarr
-                  params:
-                      unmonitored: false
-                - type: sonarr
-                  service_group: Media
-                  service_name: Sonarr
-                  params:
-                      unmonitored: false
+            type: immich
+            url: "{{HOMEPAGE_VAR_IMMICH_URL}}"
+            key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
+            version: 2
 
 # 6 plain launcher tiles -> one row of 6.
 - Apps:
@@ -210,3 +122,116 @@
         description: CV website
         icon: si-biolink
         siteMonitor: "{{HOMEPAGE_VAR_MYSITE_URL}}"
+
+# ===== Tab "Media" =====
+
+# What is playing, what was asked for, what is downloading right now.
+- Watch:
+    - Plex:
+        href: http://10.0.0.101:32400/web
+        description: Movies & TV
+        icon: plex
+        server: apps
+        container: plex
+        widget:
+            type: plex
+            url: http://10.0.0.101:32400
+            key: "{{HOMEPAGE_VAR_PLEX_KEY}}"
+
+    - Seerr:
+        href: https://seerr.mbuz.uk
+        description: Requests
+        icon: overseerr
+        server: apps
+        container: seerr
+        widget:
+            type: overseerr
+            url: http://10.0.0.101:5055
+            key: "{{HOMEPAGE_VAR_SEERR_KEY}}"
+
+    - Transmission:
+        href: "{{HOMEPAGE_VAR_TRANSMISSION_URL}}/"
+        description: Torrents via VPN
+        icon: transmission
+        server: apps
+        container: transmission-openvpn
+        widget:
+            type: transmission
+            url: "{{HOMEPAGE_VAR_TRANSMISSION_URL}}"
+
+# The *arr pipeline: counters only, so the cards stay the same height.
+- Automation:
+    - Radarr:
+        href: https://radarr.mbuz.uk
+        description: Movies
+        icon: radarr
+        server: apps
+        container: radarr
+        widget:
+            type: radarr
+            url: http://radarr:7878
+            key: "{{HOMEPAGE_VAR_RADARR_KEY}}"
+
+    - Sonarr:
+        href: https://sonarr.mbuz.uk
+        description: TV shows
+        icon: sonarr
+        server: apps
+        container: sonarr
+        widget:
+            type: sonarr
+            url: http://sonarr:8989
+            key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
+
+    - Prowlarr:
+        href: https://prowlarr.mbuz.uk
+        description: Indexers
+        icon: prowlarr
+        server: apps
+        container: prowlarr
+        widget:
+            type: prowlarr
+            url: http://prowlarr:9696
+            key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
+
+# Calendar next to the two download queues. The queue cards repeat the Radarr/Sonarr
+# widgets with only the "queued" counter, so a long queue grows here and nowhere else.
+- Activity:
+    - Upcoming:
+        widget:
+            type: calendar
+            view: agenda
+            maxEvents: 10
+            showTime: false
+            timezone: Europe/Warsaw
+            integrations:
+                - type: radarr
+                  service_group: Automation
+                  service_name: Radarr
+                  params:
+                      unmonitored: false
+                - type: sonarr
+                  service_group: Automation
+                  service_name: Sonarr
+                  params:
+                      unmonitored: false
+
+    - Movies queue:
+        href: https://radarr.mbuz.uk/activity/queue
+        icon: radarr
+        widget:
+            type: radarr
+            url: http://radarr:7878
+            key: "{{HOMEPAGE_VAR_RADARR_KEY}}"
+            enableQueue: true
+            fields: ["queued"]
+
+    - Episodes queue:
+        href: https://sonarr.mbuz.uk/activity/queue
+        icon: sonarr
+        widget:
+            type: sonarr
+            url: http://sonarr:8989
+            key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
+            enableQueue: true
+            fields: ["queued"]

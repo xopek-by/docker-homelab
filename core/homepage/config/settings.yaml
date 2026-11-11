@@ -14,22 +14,46 @@ quicklaunch:
   searchDescriptions: true
   hideInternetSearch: false
 
-# Two service blocks without titles: a 4x2 grid of widget cards on top,
-# a single row of 6 plain launcher tiles below. Bookmarks follow as 4 columns.
+# Two tabs. Every group (services and bookmarks) is pinned to a tab, so nothing
+# leaks onto both. Headers are hidden: the tab name already says what it is.
+#   Home:  infrastructure widgets (4 + 3), launcher tiles, bookmarks
+#   Media: what is playing/downloading, the *arr pipeline, then calendar + queues
 layout:
-  Overview:
+  Core:
+    tab: Home
     style: row
     columns: 4
     header: false
-  Media:
+  Services:
+    tab: Home
     style: row
-    columns: 5
-    header: false
-  Upcoming:
-    style: row
-    columns: 1
+    columns: 3
     header: false
   Apps:
+    tab: Home
     style: row
     columns: 6
+    header: false
+  Infrastructure:
+    tab: Home
+  AI:
+    tab: Home
+  Dev:
+    tab: Home
+  Reference:
+    tab: Home
+  Watch:
+    tab: Media
+    style: row
+    columns: 3
+    header: false
+  Automation:
+    tab: Media
+    style: row
+    columns: 3
+    header: false
+  Activity:
+    tab: Media
+    style: row
+    columns: 3
     header: false
