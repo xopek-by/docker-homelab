@@ -5,8 +5,8 @@
 
 # ===== Tab "Home" =====
 
-# Hypervisor, backups, storage, stacks -> one row of 4.
-- Core:
+# The PVE host: API widget plus live Glances graphs (REST API on 10.0.0.1:61208, password-protected).
+- Hypervisor:
     - Proxmox:
         href: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
         description: Lenovo P520
@@ -17,42 +17,6 @@
             username: "{{HOMEPAGE_VAR_PROXMOX_PAM}}"
             password: "{{HOMEPAGE_VAR_PROXMOX_SECRET}}"
 
-    - Proxmox Backup:
-        href: https://10.0.0.201:8007
-        description: Backups
-        icon: proxmox
-        widget:
-            type: proxmoxbackupserver
-            url: https://10.0.0.201:8007
-            # Read-only token: homepage@pbs!homepage with Audit on /
-            username: homepage@pbs!homepage
-            password: "{{HOMEPAGE_VAR_PBS_TOKEN}}"
-
-    - TrueNAS:
-        href: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
-        description: Storage
-        icon: truenas
-        widget:
-            type: truenas
-            url: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
-            key: "{{HOMEPAGE_VAR_TRUENAS_KEY}}"
-            # Pool usage bars (boot-pool, cold, external)
-            enablePools: true
-            nasType: scale
-
-    - Komodo:
-        href: https://komodo.mbuz.uk
-        description: Docker stacks
-        icon: komodo
-        widget:
-            type: komodo
-            url: "{{HOMEPAGE_VAR_KOMODO_URL}}"
-            key: "{{HOMEPAGE_VAR_KOMODO_KEY}}"
-            secret: "{{HOMEPAGE_VAR_KOMODO_SECRET}}"
-            showSummary: true
-
-# Live graphs of the PVE host from Glances (REST API on 10.0.0.1:61208, password-protected).
-- Host:
     - CPU:
         widget:
             type: glances
@@ -89,27 +53,53 @@
             version: 4
             metric: "sensor:Package id 0"
 
-# Monitoring, edge and apps with live widgets -> one row of 5.
-- Services:
-    - Zabbix:
-        href: "{{HOMEPAGE_VAR_ZABBIX_URL}}/"
-        description: Monitoring
-        icon: zabbix
-        siteMonitor: "{{HOMEPAGE_VAR_ZABBIX_URL}}"
+# Where the data lives: NAS pools, backups, photo library.
+- Storage:
+    - TrueNAS:
+        href: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
+        description: Storage
+        icon: truenas
         widget:
-            type: zabbix
-            url: "{{HOMEPAGE_VAR_ZABBIX_URL}}"
-            key: "{{HOMEPAGE_VAR_ZABBIX_KEY}}"
+            type: truenas
+            url: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
+            key: "{{HOMEPAGE_VAR_TRUENAS_KEY}}"
+            # Pool usage bars (boot-pool, cold, external)
+            enablePools: true
+            nasType: scale
 
-    - AdGuard:
-        href: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
-        description: DNS & DHCP
-        icon: adguard-home
+    - Proxmox Backup:
+        href: https://10.0.0.201:8007
+        description: Backups
+        icon: proxmox
         widget:
-            type: adguard
-            url: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
-            username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
-            password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
+            type: proxmoxbackupserver
+            url: https://10.0.0.201:8007
+            # Read-only token: homepage@pbs!homepage with Audit on /
+            username: homepage@pbs!homepage
+            password: "{{HOMEPAGE_VAR_PBS_TOKEN}}"
+
+    - Immich:
+        href: "{{HOMEPAGE_VAR_IMMICH_URL}}/photos"
+        description: Photos
+        icon: immich
+        widget:
+            type: immich
+            url: "{{HOMEPAGE_VAR_IMMICH_URL}}"
+            key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
+            version: 2
+
+# Running the stacks, the network edge, monitoring and code.
+- Platform:
+    - Komodo:
+        href: https://komodo.mbuz.uk
+        description: Docker stacks
+        icon: komodo
+        widget:
+            type: komodo
+            url: "{{HOMEPAGE_VAR_KOMODO_URL}}"
+            key: "{{HOMEPAGE_VAR_KOMODO_KEY}}"
+            secret: "{{HOMEPAGE_VAR_KOMODO_SECRET}}"
+            showSummary: true
 
     - Nginx Proxy Manager:
         href: "{{HOMEPAGE_VAR_NPM_URL}}/nginx/proxy"
@@ -123,15 +113,25 @@
             username: "{{HOMEPAGE_VAR_NPM_USER}}"
             password: "{{HOMEPAGE_VAR_NPM_PASS}}"
 
-    - Immich:
-        href: "{{HOMEPAGE_VAR_IMMICH_URL}}/photos"
-        description: Photos
-        icon: immich
+    - AdGuard:
+        href: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
+        description: DNS & DHCP
+        icon: adguard-home
         widget:
-            type: immich
-            url: "{{HOMEPAGE_VAR_IMMICH_URL}}"
-            key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
-            version: 2
+            type: adguard
+            url: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
+            username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
+            password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
+
+    - Zabbix:
+        href: "{{HOMEPAGE_VAR_ZABBIX_URL}}/"
+        description: Monitoring
+        icon: zabbix
+        siteMonitor: "{{HOMEPAGE_VAR_ZABBIX_URL}}"
+        widget:
+            type: zabbix
+            url: "{{HOMEPAGE_VAR_ZABBIX_URL}}"
+            key: "{{HOMEPAGE_VAR_ZABBIX_KEY}}"
 
     - Gitea:
         href: "{{HOMEPAGE_VAR_GITEA_URL}}/"
@@ -179,7 +179,7 @@
 # ===== Tab "Media" =====
 
 # What is playing, what was asked for, what is downloading right now.
-- Watch:
+- Watching:
     - Plex:
         href: http://10.0.0.101:32400/web
         description: Movies & TV

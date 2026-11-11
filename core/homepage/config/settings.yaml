@@ -15,30 +15,26 @@ quicklaunch:
   hideInternetSearch: false
 
 # Two tabs. Every group (services and bookmarks) is pinned to a tab, so nothing
-# leaks onto both. Headers are hidden: the tab name already says what it is.
-#   Home:  core widgets (4), host graphs (4), service widgets (5), launchers (5), bookmarks
-#   Media: what is playing/downloading, the *arr pipeline, then calendar + queues
+# leaks onto both. Group headers are shown: each row is one logical section.
+#   Home:  Hypervisor (5), Storage (3), Platform (5), Apps (5), bookmarks
+#   Media: Watching, Automation, Activity (calendar + queues)
 layout:
-  Core:
-    tab: Home
-    style: row
-    columns: 4
-    header: false
-  Host:
-    tab: Home
-    style: row
-    columns: 4
-    header: false
-  Services:
+  Hypervisor:
     tab: Home
     style: row
     columns: 5
-    header: false
+  Storage:
+    tab: Home
+    style: row
+    columns: 3
+  Platform:
+    tab: Home
+    style: row
+    columns: 5
   Apps:
     tab: Home
     style: row
     columns: 5
-    header: false
   Infrastructure:
     tab: Home
   AI:
@@ -47,18 +43,15 @@ layout:
     tab: Home
   Reference:
     tab: Home
-  Watch:
+  Watching:
     tab: Media
     style: row
     columns: 3
-    header: false
   Automation:
     tab: Media
     style: row
     columns: 3
-    header: false
   Activity:
     tab: Media
     style: row
     columns: 3
-    header: false
