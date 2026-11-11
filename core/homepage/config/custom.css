@@ -22,6 +22,10 @@
 html, body {
   background-color: var(--hl-base) !important;
 }
+/* Homepage paints #__next with the theme colour, which hid the body background */
+#__next {
+  background: transparent !important;
+}
 body {
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
   font-feature-settings: "tnum" 1, "cv11" 1; /* tabular digits: counters do not jump */
@@ -77,9 +81,15 @@ body {
 }
 
 /* ---------- Cards: frosted glass ---------- */
+li.service {
+  --hl-accent: 255 255 255; /* per-card colour, set below by data-name */
+  --hl-tint: 0;             /* 0 = plain glass */
+}
 .service-card {
-  background: var(--hl-glass) !important;
-  border: 1px solid var(--hl-line);
+  background:
+    linear-gradient(135deg, rgb(var(--hl-accent) / var(--hl-tint)), transparent 62%),
+    var(--hl-glass) !important;
+  border: 1px solid rgb(var(--hl-accent) / calc(0.06 + var(--hl-tint) * 0.6));
   border-radius: var(--hl-radius) !important;
   backdrop-filter: blur(14px) saturate(140%);
   box-shadow:
@@ -88,8 +98,10 @@ body {
   transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 .service-card:hover {
-  background: var(--hl-glass-hover) !important;
-  border-color: var(--hl-line-strong);
+  border-color: rgb(var(--hl-accent) / 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 12px 32px -12px rgb(var(--hl-accent) / 0.35) !important;
   transform: translateY(-2px);
 }
 .service-name {
@@ -120,24 +132,70 @@ body {
   min-height: 8rem;
 }
 
-/* ---------- Outside row: each card gets its own mood ---------- */
-li[data-name="Air quality"] .service-card {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.20), rgba(255, 255, 255, 0.03) 65%) !important;
-}
-li[data-name="Today"] .service-card {
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.20), rgba(255, 255, 255, 0.03) 65%) !important;
-}
-li[data-name="Tomorrow"] .service-card {
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.20), rgba(255, 255, 255, 0.03) 65%) !important;
-}
+/* ---------- Per-card accents ----------
+   Colour follows the brand where there is one, so cards are recognisable at a glance.
+   The tint is low (0.16-0.20): the page stays dark, colour only "glows" from the corner. */
+li.service[data-name] { --hl-tint: 0.16; }
+
+/* Hypervisor: Proxmox orange family; charts recoloured through the theme variables */
+li[data-name="Proxmox"]        { --hl-accent: 229 112 0; }
+li[data-name="CPU"]            { --hl-accent: 249 115 22;  --color-500: 249 115 22;  --color-700: 194 65 12; }
+li[data-name="Memory"]         { --hl-accent: 251 146 60;  --color-500: 251 146 60;  --color-700: 234 88 12; }
+li[data-name="Temperature"]    { --hl-accent: 239 68 68;   --color-500: 248 113 113; --color-700: 220 38 38; }
+
+/* Storage */
+li[data-name="TrueNAS"]        { --hl-accent: 14 165 233; }
+li[data-name="Proxmox Backup"] { --hl-accent: 229 112 0; }
+li[data-name="Immich"]         { --hl-accent: 192 132 252; }
+li[data-name="NVMe disk"]      { --hl-accent: 34 211 238;  --color-500: 34 211 238;  --color-700: 8 145 178; }
+
+/* Platform */
+li[data-name="Komodo"]              { --hl-accent: 45 212 191; }
+li[data-name="Gitea"]               { --hl-accent: 132 204 22; }
+li[data-name="AdGuard"]             { --hl-accent: 74 222 128; }
+li[data-name="Nginx Proxy Manager"] { --hl-accent: 244 114 182; }
+li[data-name="Zabbix"]              { --hl-accent: 239 68 68; }
+
+/* Outside: weather moods */
+li[data-name="Air quality"] { --hl-accent: 16 185 129;  --hl-tint: 0.22; }
+li[data-name="Today"]       { --hl-accent: 251 191 36;  --hl-tint: 0.22; }
+li[data-name="Tomorrow"]    { --hl-accent: 56 189 248;  --hl-tint: 0.22; }
+li[data-name="Daylight"]    { --hl-accent: 249 115 22;  --hl-tint: 0.24; }
 li[data-name="Daylight"] .service-card {
-  background: linear-gradient(135deg, rgba(249, 115, 22, 0.22), rgba(236, 72, 153, 0.14) 45%, rgba(255, 255, 255, 0.03) 75%) !important;
+  background:
+    linear-gradient(135deg, rgba(249, 115, 22, 0.24), rgba(236, 72, 153, 0.14) 45%, transparent 75%),
+    var(--hl-glass) !important;
 }
-/* Tint the mdi icons to match (they are CSS-masked divs) */
 li[data-name="Air quality"] .service-icon [style*="mask"] { background: #34d399 !important; }
 li[data-name="Today"] .service-icon [style*="mask"]       { background: #fbbf24 !important; }
 li[data-name="Tomorrow"] .service-icon [style*="mask"]    { background: #38bdf8 !important; }
 li[data-name="Daylight"] .service-icon [style*="mask"]    { background: linear-gradient(135deg, #fb923c, #f472b6) !important; }
+/* Sunrise / sunset come as "2026-11-11T07:06": show only the HH:MM tail */
+li[data-name="Daylight"] .service-block:nth-child(-n+2) > div:first-child {
+  width: 4.45ch;
+  margin: 0 auto;
+  overflow: hidden;
+  white-space: nowrap;
+  direction: rtl;
+}
+
+/* Apps */
+li[data-name="Grafana"]     { --hl-accent: 249 115 22; }
+li[data-name="Vaultwarden"] { --hl-accent: 59 130 246; }
+li[data-name="Seafile"]     { --hl-accent: 250 204 21; }
+li[data-name="IT Tools"]    { --hl-accent: 34 197 94; }
+li[data-name="Landing"]     { --hl-accent: 167 139 250; }
+
+/* Media tab */
+li[data-name="Plex"]           { --hl-accent: 229 160 13; }
+li[data-name="Seerr"]          { --hl-accent: 129 140 248; }
+li[data-name="Transmission"]   { --hl-accent: 220 38 38; }
+li[data-name="Radarr"],
+li[data-name="Movies queue"]   { --hl-accent: 250 204 21; }
+li[data-name="Sonarr"],
+li[data-name="Episodes queue"] { --hl-accent: 56 189 248; }
+li[data-name="Prowlarr"]       { --hl-accent: 251 146 60; }
+li[data-name="Upcoming"]       { --hl-accent: 167 139 250; }
 
 /* ---------- Header widgets ---------- */
 #information-widgets {

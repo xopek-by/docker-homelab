@@ -228,14 +228,10 @@
             mappings:
                 - field: { daily: { sunrise: 0 } }
                   label: Sunrise
-                  format: date
-                  locale: en-GB
-                  timeStyle: short
+                  format: text # "2026-11-11T07:06", custom.css shows only the HH:MM tail
                 - field: { daily: { sunset: 0 } }
                   label: Sunset
-                  format: date
-                  locale: en-GB
-                  timeStyle: short
+                  format: text # "2026-11-11T07:06", custom.css shows only the HH:MM tail
                 - field: { daily: { daylight_duration: 0 } }
                   label: Day length
                   format: duration
