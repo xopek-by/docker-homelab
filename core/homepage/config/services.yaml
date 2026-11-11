@@ -68,6 +68,8 @@
             widget:
                 type: proxmoxbackupserver
                 url: https://10.0.0.201:8007
+                # Two wide blocks: with four, "FAILED TASKS 24H" wraps and the card grows
+                fields: ["datastore_usage", "failed_tasks_24h"]
                 # Read-only token: homepage@pbs!homepage with Audit on /
                 username: homepage@pbs!homepage
                 password: "{{HOMEPAGE_VAR_PBS_TOKEN}}"
@@ -144,6 +146,99 @@
             type: zabbix
             url: "{{HOMEPAGE_VAR_ZABBIX_URL}}"
             key: "{{HOMEPAGE_VAR_ZABBIX_KEY}}"
+
+# Gdansk outside: air quality, today/tomorrow forecast, daylight (Open-Meteo, no API key).
+- Outside:
+    - Air quality:
+        description: European AQI, µg/m³
+        icon: mdi-air-filter
+        widget:
+            type: customapi
+            url: "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=54.372158&longitude=18.638306&current=european_aqi,pm2_5,pm10,nitrogen_dioxide&timezone=Europe%2FWarsaw"
+            refreshInterval: 900000 # 15 min
+            mappings:
+                - field: { current: european_aqi }
+                  label: AQI
+                  format: number
+                - field: { current: pm2_5 }
+                  label: PM2.5
+                  format: float
+                - field: { current: pm10 }
+                  label: PM10
+                  format: float
+                - field: { current: nitrogen_dioxide }
+                  label: NO2
+                  format: float
+
+    - Today:
+        description: Gdansk forecast
+        icon: mdi-weather-partly-cloudy
+        widget:
+            type: customapi
+            url: "https://api.open-meteo.com/v1/forecast?latitude=54.372158&longitude=18.638306&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,sunrise,sunset,daylight_duration&forecast_days=2&timezone=Europe%2FWarsaw"
+            refreshInterval: 900000 # 15 min
+            mappings:
+                - field: { daily: { temperature_2m_max: 0 } }
+                  label: Max
+                  format: float
+                  suffix: "°C"
+                - field: { daily: { temperature_2m_min: 0 } }
+                  label: Min
+                  format: float
+                  suffix: "°C"
+                - field: { daily: { precipitation_probability_max: 0 } }
+                  label: Rain
+                  format: percent
+                - field: { daily: { wind_speed_10m_max: 0 } }
+                  label: Wind
+                  format: number
+                  suffix: " km/h"
+
+    - Tomorrow:
+        description: Gdansk forecast
+        icon: mdi-weather-partly-cloudy
+        widget:
+            type: customapi
+            url: "https://api.open-meteo.com/v1/forecast?latitude=54.372158&longitude=18.638306&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,sunrise,sunset,daylight_duration&forecast_days=2&timezone=Europe%2FWarsaw"
+            refreshInterval: 900000 # 15 min
+            mappings:
+                - field: { daily: { temperature_2m_max: 1 } }
+                  label: Max
+                  format: float
+                  suffix: "°C"
+                - field: { daily: { temperature_2m_min: 1 } }
+                  label: Min
+                  format: float
+                  suffix: "°C"
+                - field: { daily: { precipitation_probability_max: 1 } }
+                  label: Rain
+                  format: percent
+                - field: { daily: { wind_speed_10m_max: 1 } }
+                  label: Wind
+                  format: number
+                  suffix: " km/h"
+
+    - Daylight:
+        description: Sunrise and sunset today
+        icon: mdi-weather-sunset
+        widget:
+            type: customapi
+            url: "https://api.open-meteo.com/v1/forecast?latitude=54.372158&longitude=18.638306&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,sunrise,sunset,daylight_duration&forecast_days=2&timezone=Europe%2FWarsaw"
+            refreshInterval: 900000 # 15 min
+            mappings:
+                - field: { daily: { sunrise: 0 } }
+                  label: Sunrise
+                  format: date
+                  locale: en-GB
+                  timeStyle: short
+                - field: { daily: { sunset: 0 } }
+                  label: Sunset
+                  format: date
+                  locale: en-GB
+                  timeStyle: short
+                - field: { daily: { daylight_duration: 0 } }
+                  label: Day length
+                  format: duration
 
 # 5 plain launcher tiles -> one row of 5.
 - Apps:

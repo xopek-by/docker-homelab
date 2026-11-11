@@ -1,0 +1,5 @@
+/* Hypervisor / Storage zones (nested groups of "Overview"): give every card the same
+   height, so graph cards (fixed 68px chart) and counter/pool cards line up in both columns. */
+.services-group.subgroup .service-card {
+  min-height: 8rem;
+}
