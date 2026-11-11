@@ -8,9 +8,14 @@ BitTorrent traffic stays inside NordVPN.
 | --- | --- | --- |
 | Plex | 32400 (host network) | Media server for the Hisense TV |
 | Seerr | 5055 | Request page ("I want this movie"), login with Plex |
-| Prowlarr | 9696 | Indexers (RuTracker, RuTor, ...), synced to Radarr/Sonarr |
-| Radarr | 7878 | Movies |
-| Sonarr | 8989 | TV shows |
+| Prowlarr | https://prowlarr.mbuz.uk | Indexers (RuTracker, RuTor, ...), synced to Radarr/Sonarr |
+| Radarr | https://radarr.mbuz.uk | Movies |
+| Sonarr | https://sonarr.mbuz.uk | TV shows |
+
+Prowlarr, Radarr and Sonarr publish no ports. They sit on the `proxy` network
+with NPM and use `AuthenticationMethod=External` in `config.xml`: login is done
+by Authelia forward-auth (proxy host "Advanced" tab, same as Mealie). Inside
+the stack they talk to each other by container name with API keys.
 
 ## Storage
 

@@ -39,9 +39,7 @@ services:
     environment: *common-env
     volumes:
       - ${CONFIG_ROOT:-/opt/docker_data}/prowlarr:/config
-    ports:
-      - '9696:9696'
-    networks: [media]
+    networks: [media, proxy]
     logging: *logging
 
   radarr:
@@ -52,9 +50,7 @@ services:
     volumes:
       - ${CONFIG_ROOT:-/opt/docker_data}/radarr:/config
       - ${MEDIA_ROOT:-/mnt/media}:/mnt/media
-    ports:
-      - '7878:7878'
-    networks: [media, transmission]
+    networks: [media, proxy, transmission]
     logging: *logging
 
   sonarr:
@@ -65,9 +61,7 @@ services:
     volumes:
       - ${CONFIG_ROOT:-/opt/docker_data}/sonarr:/config
       - ${MEDIA_ROOT:-/mnt/media}:/mnt/media
-    ports:
-      - '8989:8989'
-    networks: [media, transmission]
+    networks: [media, proxy, transmission]
     logging: *logging
 
   seerr:
@@ -86,6 +80,10 @@ services:
 
 networks:
   media:
+  # Shared with NPM: Prowlarr/Radarr/Sonarr have no published ports and trust
+  # Authelia (AuthenticationMethod=External), so NPM + forward-auth is the only way in.
+  proxy:
+    external: true
   # Network of the Transmission stack. The VPN container routes everything except
   # its own subnets and LOCAL_NETWORK into the tunnel, so Radarr/Sonarr must sit
   # on the same bridge to get replies (host: transmission-openvpn:9091).
