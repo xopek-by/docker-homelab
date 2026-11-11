@@ -21,6 +21,14 @@ layout:
     style: row
     columns: 4
     header: false
+  Media:
+    style: row
+    columns: 5
+    header: false
+  Upcoming:
+    style: row
+    columns: 1
+    header: false
   Apps:
     style: row
     columns: 6

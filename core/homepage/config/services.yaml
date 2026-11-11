@@ -91,6 +91,86 @@
             username: "{{HOMEPAGE_VAR_NPM_USER}}"
             password: "{{HOMEPAGE_VAR_NPM_PASS}}"
 
+# Media stack (lab/media): 5 widget cards in one row.
+- Media:
+    - Plex:
+        href: http://10.0.0.101:32400/web
+        description: Movies & TV
+        icon: plex
+        server: apps
+        container: plex
+        widget:
+            type: plex
+            url: http://10.0.0.101:32400
+            key: "{{HOMEPAGE_VAR_PLEX_KEY}}"
+
+    - Seerr:
+        href: https://seerr.mbuz.uk
+        description: Requests
+        icon: overseerr
+        server: apps
+        container: seerr
+        widget:
+            type: overseerr
+            url: http://10.0.0.101:5055
+            key: "{{HOMEPAGE_VAR_SEERR_KEY}}"
+
+    - Radarr:
+        href: https://radarr.mbuz.uk
+        description: Movies
+        icon: radarr
+        server: apps
+        container: radarr
+        widget:
+            type: radarr
+            url: http://radarr:7878
+            key: "{{HOMEPAGE_VAR_RADARR_KEY}}"
+            enableQueue: true
+
+    - Sonarr:
+        href: https://sonarr.mbuz.uk
+        description: TV shows
+        icon: sonarr
+        server: apps
+        container: sonarr
+        widget:
+            type: sonarr
+            url: http://sonarr:8989
+            key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
+            enableQueue: true
+
+    - Prowlarr:
+        href: https://prowlarr.mbuz.uk
+        description: Indexers
+        icon: prowlarr
+        server: apps
+        container: prowlarr
+        widget:
+            type: prowlarr
+            url: http://prowlarr:9696
+            key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
+
+# Upcoming movie releases and episodes from Radarr/Sonarr.
+- Upcoming:
+    - Calendar:
+        widget:
+            type: calendar
+            view: agenda
+            maxEvents: 8
+            showTime: false
+            timezone: Europe/Warsaw
+            integrations:
+                - type: radarr
+                  service_group: Media
+                  service_name: Radarr
+                  params:
+                      unmonitored: false
+                - type: sonarr
+                  service_group: Media
+                  service_name: Sonarr
+                  params:
+                      unmonitored: false
+
 # 6 plain launcher tiles -> one row of 6.
 - Apps:
     - Gitea:

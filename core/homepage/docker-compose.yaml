@@ -20,6 +20,8 @@ services:
       retries: 3
     networks:
       - homepage-net
+      # Media stack: Radarr/Sonarr/Prowlarr have no published ports, widgets talk to them by name
+      - proxy
 
   # Read-only Docker API proxy: homepage never touches docker.sock directly.
   socket-proxy:
@@ -65,3 +67,5 @@ services:
 networks:
   homepage-net:
     driver: bridge
+  proxy:
+    external: true
