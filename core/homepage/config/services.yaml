@@ -5,7 +5,7 @@
 
 # ===== Tab "Home" =====
 
-# Hypervisor, storage, stacks, monitoring -> one row of 4.
+# Hypervisor, stacks, monitoring, DNS -> one row of 4.
 - Core:
     - Proxmox:
         href: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
@@ -38,19 +38,6 @@
             url: "{{HOMEPAGE_VAR_ZABBIX_URL}}"
             key: "{{HOMEPAGE_VAR_ZABBIX_KEY}}"
 
-    - TrueNAS:
-        href: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
-        description: Storage
-        icon: truenas
-        widget:
-            type: truenas
-            url: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
-            key: "{{HOMEPAGE_VAR_TRUENAS_KEY}}"
-            # Pool bars make this card twice as tall as its neighbours; pool usage is in Zabbix
-            enablePools: false
-
-# Network edge and the one user-facing app with a live widget -> one row of 3.
-- Services:
     - AdGuard:
         href: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
         description: DNS & DHCP
@@ -60,6 +47,20 @@
             url: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
             username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
             password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
+
+# Storage, edge and apps with live widgets -> one row of 4.
+- Services:
+    - TrueNAS:
+        href: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
+        description: Storage
+        icon: truenas
+        widget:
+            type: truenas
+            url: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
+            key: "{{HOMEPAGE_VAR_TRUENAS_KEY}}"
+            # Pool usage bars (boot-pool, cold, external)
+            enablePools: true
+            nasType: scale
 
     - Nginx Proxy Manager:
         href: "{{HOMEPAGE_VAR_NPM_URL}}/nginx/proxy"
@@ -83,14 +84,17 @@
             key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
             version: 2
 
-# 6 plain launcher tiles -> one row of 6.
-- Apps:
     - Gitea:
         href: "{{HOMEPAGE_VAR_GITEA_URL}}/"
         description: Git server
         icon: gitea
-        siteMonitor: "{{HOMEPAGE_VAR_GITEA_URL}}/"
+        widget:
+            type: gitea
+            url: "{{HOMEPAGE_VAR_GITEA_URL}}"
+            key: "{{HOMEPAGE_VAR_GITEA_KEY}}"
 
+# 5 plain launcher tiles -> one row of 5.
+- Apps:
     - Grafana:
         href: "{{HOMEPAGE_VAR_GRAFANA_URL}}/login"
         description: Dashboards
@@ -200,8 +204,8 @@
     - Upcoming:
         widget:
             type: calendar
-            view: agenda
-            maxEvents: 10
+            # Month grid fills the card; agenda with one release left it empty
+            view: monthly
             showTime: false
             timezone: Europe/Warsaw
             integrations:
