@@ -34,6 +34,7 @@ Docker Compose stacks for my homelab. Each project lives in its own directory wi
 | [Bookstack](lab/bookstack/README.md) | Wiki |
 | [Guacamole](lab/guacamole/README.md) | Remote desktop gateway |
 | [Mealie](lab/mealie/README.md) | Recipe manager |
+| [Media](lab/media/README.md) | Plex, Seerr, Prowlarr, Radarr, Sonarr |
 | [Seafile](lab/seafile/README.md) | File sync and share |
 | [Semaphore UI](lab/semaphore-ui) | Ansible UI |
 

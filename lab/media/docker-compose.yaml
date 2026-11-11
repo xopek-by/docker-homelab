@@ -1,0 +1,94 @@
+# Media stack: Plex + Prowlarr + Radarr + Sonarr + Seerr.
+# Downloads go through the existing Transmission-over-OpenVPN stack (core/transmission).
+# Radarr/Sonarr see the whole share at the same path as the host (/mnt/media), so
+# imports from /mnt/media/transmission to /mnt/media/library are hardlinks, not copies.
+
+x-common-env: &common-env
+  PUID: ${PUID:-1000}
+  PGID: ${PGID:-1000}
+  TZ: ${TZ:-Europe/Warsaw}
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+
+services:
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    restart: unless-stopped
+    # Host network: the TV discovers the server via GDM broadcast on the LAN.
+    network_mode: host
+    environment:
+      <<: *common-env
+      VERSION: docker
+      PLEX_CLAIM: ${PLEX_CLAIM:-}
+    volumes:
+      - ${CONFIG_ROOT:-/opt/docker_data}/plex:/config
+      - ${MEDIA_ROOT:-/mnt/media}/library:/library:ro
+    # No GPU: keep the occasional CPU transcode (audio, subtitles) in RAM.
+    tmpfs:
+      - /transcode:size=2g
+    logging: *logging
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    restart: unless-stopped
+    environment: *common-env
+    volumes:
+      - ${CONFIG_ROOT:-/opt/docker_data}/prowlarr:/config
+    ports:
+      - '9696:9696'
+    networks: [media]
+    logging: *logging
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    restart: unless-stopped
+    environment: *common-env
+    volumes:
+      - ${CONFIG_ROOT:-/opt/docker_data}/radarr:/config
+      - ${MEDIA_ROOT:-/mnt/media}:/mnt/media
+    ports:
+      - '7878:7878'
+    networks: [media, transmission]
+    logging: *logging
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    environment: *common-env
+    volumes:
+      - ${CONFIG_ROOT:-/opt/docker_data}/sonarr:/config
+      - ${MEDIA_ROOT:-/mnt/media}:/mnt/media
+    ports:
+      - '8989:8989'
+    networks: [media, transmission]
+    logging: *logging
+
+  seerr:
+    image: ghcr.io/seerr-team/seerr:latest
+    container_name: seerr
+    restart: unless-stopped
+    init: true
+    environment:
+      TZ: ${TZ:-Europe/Warsaw}
+    volumes:
+      - ${CONFIG_ROOT:-/opt/docker_data}/seerr:/app/config
+    ports:
+      - '5055:5055'
+    networks: [media]
+    logging: *logging
+
+networks:
+  media:
+  # Network of the Transmission stack. The VPN container routes everything except
+  # its own subnets and LOCAL_NETWORK into the tunnel, so Radarr/Sonarr must sit
+  # on the same bridge to get replies (host: transmission-openvpn:9091).
+  transmission:
+    external: true
+    name: transmission_default
