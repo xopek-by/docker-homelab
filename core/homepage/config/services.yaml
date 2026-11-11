@@ -58,7 +58,7 @@
                 key: "{{HOMEPAGE_VAR_TRUENAS_KEY}}"
                 # Pool usage bars (cold, external) matter more than load/uptime
                 enablePools: true
-                fields: ["alerts"]
+                fields: []  # no counters, pool bars only
                 nasType: scale
 
         - Proxmox Backup:
