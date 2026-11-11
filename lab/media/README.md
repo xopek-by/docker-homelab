@@ -54,3 +54,26 @@ converted, which is cheap.
   `transmission-openvpn:9091`. Going through the host port does not work:
   the VPN container would send replies into the tunnel.
 - Notifications go to the Telegram group Homelab.
+
+## What is configured (2026-11-11)
+
+- Radarr/Sonarr: profile `1080p Direct Play` (the only one), size limits
+  5/25/60 MB per minute for 1080p and 3/15/35 for 720p. Custom formats:
+  Russian audio +100, Original audio +50, HEVC +10, Dolby Vision -1000,
+  Hardcoded subs -1000, 3D -10000. Minimum score 50 (Russian or original),
+  upgrades continue until 150 (Russian + original).
+- Prowlarr: RuTor, NoNaMe Club, NewStudio (public, "RUS" appended to titles),
+  synced to Radarr/Sonarr with category 8000 added. RuTracker needs an
+  account: add it in Prowlarr with "Add RUS to title" enabled.
+- Notifications: Telegram group Homelab, topic Media.
+- Plex preferences: transcoder temp in `/transcode` (tmpfs), scheduled library
+  scan every 15 min (no inotify on SMB), video preview thumbnails off.
+
+## First run (manual steps)
+
+1. Plex: open `http://10.0.0.101:32400/web` from the LAN, sign in, add
+   libraries Movies -> `/library/movies` and TV Shows -> `/library/tv`.
+   On the TV, set the Plex client quality to Original / Maximum.
+2. Seerr: open `http://10.0.0.101:5055`, sign in with Plex, add Radarr
+   (`http://radarr:7878`) and Sonarr (`http://sonarr:8989`), profile
+   `1080p Direct Play`.
