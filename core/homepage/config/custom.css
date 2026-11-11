@@ -1,5 +1,145 @@
-/* Hypervisor / Storage zones (nested groups of "Overview"): give every card the same
-   height, so graph cards (fixed 68px chart) and counter/pool cards line up in both columns. */
+/* =====================================================================
+   Homelab theme: dark "aurora + glass".
+   Background: near-black base, two soft colour glows, faint dot grid and
+   film-grain noise. Cards: frosted glass with a hairline border.
+   ===================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
+
+:root {
+  --hl-base: #0a0d14;
+  --hl-teal: 20 184 166;
+  --hl-violet: 124 58 237;
+  --hl-amber: 245 158 11;
+  --hl-glass: rgba(255, 255, 255, 0.045);
+  --hl-glass-hover: rgba(255, 255, 255, 0.075);
+  --hl-line: rgba(255, 255, 255, 0.08);
+  --hl-line-strong: rgba(255, 255, 255, 0.16);
+  --hl-radius: 14px;
+}
+
+/* ---------- Page background ---------- */
+html, body {
+  background-color: var(--hl-base) !important;
+}
+body {
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-feature-settings: "tnum" 1, "cv11" 1; /* tabular digits: counters do not jump */
+  background-image:
+    /* film grain */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+    /* dot grid */
+    radial-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    /* aurora glows */
+    radial-gradient(60rem 40rem at 8% -10%, rgb(var(--hl-teal) / 0.20), transparent 60%),
+    radial-gradient(55rem 38rem at 95% 0%, rgb(var(--hl-violet) / 0.22), transparent 60%),
+    radial-gradient(50rem 35rem at 50% 120%, rgb(var(--hl-amber) / 0.08), transparent 60%) !important;
+  background-size: 160px 160px, 24px 24px, auto, auto, auto !important;
+  background-attachment: fixed !important;
+}
+
+/* ---------- Tabs ---------- */
+#myTab {
+  background: var(--hl-glass) !important;
+  border: 1px solid var(--hl-line);
+  border-radius: var(--hl-radius) !important;
+  backdrop-filter: blur(14px) saturate(140%);
+  padding: 2px;
+}
+#myTab button {
+  border-radius: 11px !important;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: background 0.25s, box-shadow 0.25s, color 0.25s;
+}
+#myTab button[aria-selected="true"] {
+  background: linear-gradient(135deg, rgb(var(--hl-teal) / 0.28), rgb(var(--hl-violet) / 0.28)) !important;
+  box-shadow: 0 0 0 1px var(--hl-line-strong) inset, 0 6px 24px rgb(var(--hl-violet) / 0.18);
+  color: #fff !important;
+}
+
+/* ---------- Section headers: small caps label + fading rule ---------- */
+.service-group-name {
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.55) !important;
+  align-items: center;
+  width: 100%;
+}
+.service-group-name::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  margin-left: 0.9rem;
+  background: linear-gradient(90deg, var(--hl-line-strong), transparent);
+}
+
+/* ---------- Cards: frosted glass ---------- */
+.service-card {
+  background: var(--hl-glass) !important;
+  border: 1px solid var(--hl-line);
+  border-radius: var(--hl-radius) !important;
+  backdrop-filter: blur(14px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 10px 30px -12px rgba(0, 0, 0, 0.6) !important;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.service-card:hover {
+  background: var(--hl-glass-hover) !important;
+  border-color: var(--hl-line-strong);
+  transform: translateY(-2px);
+}
+.service-name {
+  font-weight: 500;
+}
+
+/* Counter blocks inside cards */
+.service-block {
+  background: rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+.service-block > div:first-child {
+  font-size: 1rem !important;
+  font-weight: 300 !important;
+  color: #fff;
+}
+.service-block > div:last-child {
+  font-size: 0.62rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+}
+
+/* Hypervisor / Storage zones (nested groups of "Overview"): equal card heights,
+   so graph cards (fixed 68px chart) and counter/pool cards line up in both columns. */
 .services-group.subgroup .service-card {
   min-height: 8rem;
+}
+
+/* ---------- Outside row: each card gets its own mood ---------- */
+li[data-name="Air quality"] .service-card {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.20), rgba(255, 255, 255, 0.03) 65%) !important;
+}
+li[data-name="Today"] .service-card {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.20), rgba(255, 255, 255, 0.03) 65%) !important;
+}
+li[data-name="Tomorrow"] .service-card {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.20), rgba(255, 255, 255, 0.03) 65%) !important;
+}
+li[data-name="Daylight"] .service-card {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.22), rgba(236, 72, 153, 0.14) 45%, rgba(255, 255, 255, 0.03) 75%) !important;
+}
+/* Tint the mdi icons to match (they are CSS-masked divs) */
+li[data-name="Air quality"] .service-icon [style*="mask"] { background: #34d399 !important; }
+li[data-name="Today"] .service-icon [style*="mask"]       { background: #fbbf24 !important; }
+li[data-name="Tomorrow"] .service-icon [style*="mask"]    { background: #38bdf8 !important; }
+li[data-name="Daylight"] .service-icon [style*="mask"]    { background: linear-gradient(135deg, #fb923c, #f472b6) !important; }
+
+/* ---------- Header widgets ---------- */
+#information-widgets {
+  padding-bottom: 0.25rem;
 }

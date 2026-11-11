@@ -4,7 +4,7 @@
 
 title: Homelab
 theme: dark
-color: slate
+color: zinc         # neutral greys; the mood comes from custom.css (aurora background, glass cards)
 headerStyle: clean
 statusStyle: dot        # small status dot instead of "176 MS" / "UNKNOWN" badges
 hideVersion: true
@@ -14,9 +14,9 @@ quicklaunch:
   searchDescriptions: true
   hideInternetSearch: false
 
-# Two tabs. Every group (services and bookmarks) is pinned to a tab, so nothing
+# Two tabs. Every group is pinned to a tab, so nothing
 # leaks onto both. Group headers are shown: each row is one logical section.
-#   Home:  Hypervisor | Storage side by side (2x2 each), Platform (5), Outside (4), Apps (5), bookmarks
+#   Home:  Hypervisor | Storage side by side (2x2 each), Platform (5), Outside (4), Apps (5)
 #   Media: Watching, Automation, Activity (calendar + queues)
 layout:
   Overview:
@@ -42,14 +42,6 @@ layout:
     tab: Home
     style: row
     columns: 5
-  Infrastructure:
-    tab: Home
-  AI:
-    tab: Home
-  Dev:
-    tab: Home
-  Reference:
-    tab: Home
   Watching:
     tab: Media
     style: row
