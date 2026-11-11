@@ -5,88 +5,90 @@
 
 # ===== Tab "Home" =====
 
-# The PVE host: API widget plus live Glances graphs (REST API on 10.0.0.1:61208, password-protected).
-- Hypervisor:
-    - Proxmox:
-        href: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
-        description: Lenovo P520
-        icon: proxmox
-        widget:
-            type: proxmox
-            url: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
-            username: "{{HOMEPAGE_VAR_PROXMOX_PAM}}"
-            password: "{{HOMEPAGE_VAR_PROXMOX_SECRET}}"
+# Two zones side by side, each a 2x2 grid (nested groups, layout in settings.yaml).
+# Hypervisor: PVE API widget + Glances graphs (REST API on 10.0.0.1:61208, password-protected).
+# Storage: NAS pools, backups, photo library, the PVE NVMe datastore.
+- Overview:
+    - Hypervisor:
+        - Proxmox:
+            href: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
+            description: Lenovo P520
+            icon: proxmox
+            widget:
+                type: proxmox
+                url: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
+                username: "{{HOMEPAGE_VAR_PROXMOX_PAM}}"
+                password: "{{HOMEPAGE_VAR_PROXMOX_SECRET}}"
 
-    - CPU:
-        widget:
-            type: glances
-            url: http://10.0.0.1:61208
-            username: glances
-            password: "{{HOMEPAGE_VAR_GLANCES_PASS}}"
-            version: 4
-            metric: cpu
+        - CPU:
+            widget:
+                type: glances
+                url: http://10.0.0.1:61208
+                username: glances
+                password: "{{HOMEPAGE_VAR_GLANCES_PASS}}"
+                version: 4
+                metric: cpu
 
-    - Memory:
-        widget:
-            type: glances
-            url: http://10.0.0.1:61208
-            username: glances
-            password: "{{HOMEPAGE_VAR_GLANCES_PASS}}"
-            version: 4
-            metric: memory
+        - Memory:
+            widget:
+                type: glances
+                url: http://10.0.0.1:61208
+                username: glances
+                password: "{{HOMEPAGE_VAR_GLANCES_PASS}}"
+                version: 4
+                metric: memory
 
-    - Network:
-        widget:
-            type: glances
-            url: http://10.0.0.1:61208
-            username: glances
-            password: "{{HOMEPAGE_VAR_GLANCES_PASS}}"
-            version: 4
-            metric: network:vmbr0
+        - Temperature:
+            widget:
+                type: glances
+                url: http://10.0.0.1:61208
+                username: glances
+                password: "{{HOMEPAGE_VAR_GLANCES_PASS}}"
+                version: 4
+                metric: "sensor:Package id 0"
 
-    - Temperature:
-        widget:
-            type: glances
-            url: http://10.0.0.1:61208
-            username: glances
-            password: "{{HOMEPAGE_VAR_GLANCES_PASS}}"
-            version: 4
-            metric: "sensor:Package id 0"
+    - Storage:
+        - TrueNAS:
+            href: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
+            description: Storage
+            icon: truenas
+            widget:
+                type: truenas
+                url: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
+                key: "{{HOMEPAGE_VAR_TRUENAS_KEY}}"
+                # Pool usage bars (boot-pool, cold, external)
+                enablePools: true
+                nasType: scale
 
-# Where the data lives: NAS pools, backups, photo library.
-- Storage:
-    - TrueNAS:
-        href: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
-        description: Storage
-        icon: truenas
-        widget:
-            type: truenas
-            url: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
-            key: "{{HOMEPAGE_VAR_TRUENAS_KEY}}"
-            # Pool usage bars (boot-pool, cold, external)
-            enablePools: true
-            nasType: scale
+        - Proxmox Backup:
+            href: https://10.0.0.201:8007
+            description: Backups
+            icon: proxmox
+            widget:
+                type: proxmoxbackupserver
+                url: https://10.0.0.201:8007
+                # Read-only token: homepage@pbs!homepage with Audit on /
+                username: homepage@pbs!homepage
+                password: "{{HOMEPAGE_VAR_PBS_TOKEN}}"
 
-    - Proxmox Backup:
-        href: https://10.0.0.201:8007
-        description: Backups
-        icon: proxmox
-        widget:
-            type: proxmoxbackupserver
-            url: https://10.0.0.201:8007
-            # Read-only token: homepage@pbs!homepage with Audit on /
-            username: homepage@pbs!homepage
-            password: "{{HOMEPAGE_VAR_PBS_TOKEN}}"
+        - Immich:
+            href: "{{HOMEPAGE_VAR_IMMICH_URL}}/photos"
+            description: Photos
+            icon: immich
+            widget:
+                type: immich
+                url: "{{HOMEPAGE_VAR_IMMICH_URL}}"
+                key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
+                version: 2
 
-    - Immich:
-        href: "{{HOMEPAGE_VAR_IMMICH_URL}}/photos"
-        description: Photos
-        icon: immich
-        widget:
-            type: immich
-            url: "{{HOMEPAGE_VAR_IMMICH_URL}}"
-            key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
-            version: 2
+        - NVMe disk:
+            widget:
+                type: glances
+                url: http://10.0.0.1:61208
+                username: glances
+                password: "{{HOMEPAGE_VAR_GLANCES_PASS}}"
+                version: 4
+                metric: fs:/mnt/pve/samsung-nvme
 
 # Running the stacks, the network edge, monitoring and code.
 - Platform:

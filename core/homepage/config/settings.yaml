@@ -16,17 +16,20 @@ quicklaunch:
 
 # Two tabs. Every group (services and bookmarks) is pinned to a tab, so nothing
 # leaks onto both. Group headers are shown: each row is one logical section.
-#   Home:  Hypervisor (5), Storage (3), Platform (5), Apps (5), bookmarks
+#   Home:  Hypervisor | Storage side by side (2x2 each), Platform (5), Apps (5), bookmarks
 #   Media: Watching, Automation, Activity (calendar + queues)
 layout:
-  Hypervisor:
+  Overview:
     tab: Home
     style: row
-    columns: 5
-  Storage:
-    tab: Home
-    style: row
-    columns: 3
+    columns: 2
+    header: false
+    Hypervisor:
+      style: row
+      columns: 2
+    Storage:
+      style: row
+      columns: 2
   Platform:
     tab: Home
     style: row
