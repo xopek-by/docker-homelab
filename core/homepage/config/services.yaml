@@ -56,8 +56,9 @@
                 type: truenas
                 url: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
                 key: "{{HOMEPAGE_VAR_TRUENAS_KEY}}"
-                # Pool usage bars (boot-pool, cold, external)
+                # Pool usage bars (cold, external) matter more than load/uptime
                 enablePools: true
+                fields: ["alerts"]
                 nasType: scale
 
         - Proxmox Backup:
@@ -103,6 +104,25 @@
             secret: "{{HOMEPAGE_VAR_KOMODO_SECRET}}"
             showSummary: true
 
+    - Gitea:
+        href: "{{HOMEPAGE_VAR_GITEA_URL}}/"
+        description: Git server
+        icon: gitea
+        widget:
+            type: gitea
+            url: "{{HOMEPAGE_VAR_GITEA_URL}}"
+            key: "{{HOMEPAGE_VAR_GITEA_KEY}}"
+
+    - AdGuard:
+        href: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
+        description: DNS & DHCP
+        icon: adguard-home
+        widget:
+            type: adguard
+            url: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
+            username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
+            password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
+
     - Nginx Proxy Manager:
         href: "{{HOMEPAGE_VAR_NPM_URL}}/nginx/proxy"
         description: Reverse proxy
@@ -115,16 +135,6 @@
             username: "{{HOMEPAGE_VAR_NPM_USER}}"
             password: "{{HOMEPAGE_VAR_NPM_PASS}}"
 
-    - AdGuard:
-        href: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
-        description: DNS & DHCP
-        icon: adguard-home
-        widget:
-            type: adguard
-            url: "{{HOMEPAGE_VAR_ADGUARD_URL}}"
-            username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
-            password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
-
     - Zabbix:
         href: "{{HOMEPAGE_VAR_ZABBIX_URL}}/"
         description: Monitoring
@@ -134,15 +144,6 @@
             type: zabbix
             url: "{{HOMEPAGE_VAR_ZABBIX_URL}}"
             key: "{{HOMEPAGE_VAR_ZABBIX_KEY}}"
-
-    - Gitea:
-        href: "{{HOMEPAGE_VAR_GITEA_URL}}/"
-        description: Git server
-        icon: gitea
-        widget:
-            type: gitea
-            url: "{{HOMEPAGE_VAR_GITEA_URL}}"
-            key: "{{HOMEPAGE_VAR_GITEA_KEY}}"
 
 # 5 plain launcher tiles -> one row of 5.
 - Apps:
