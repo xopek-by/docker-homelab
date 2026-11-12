@@ -39,6 +39,8 @@ while :; do
 
     started=$(date +%s)
     echo "$(date '+%F %T') sync started"
+    # rclone appends to --log-file, start every run with an empty one
+    : > "$RUN_LOG"
     rclone sync gdrive: seafile: \
         --fast-list \
         --drive-export-formats docx,xlsx,pptx,svg \
