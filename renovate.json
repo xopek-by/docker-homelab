@@ -6,6 +6,7 @@
   "prHourlyLimit": 0,
   "prConcurrentLimit": 15,
   "osvVulnerabilityAlerts": true,
+  "minimumReleaseAgeBehaviour": "timestamp-optional",
   "ignorePaths": ["lab/**"],
   "customManagers": [
     {
@@ -30,6 +31,11 @@
       "matchUpdateTypes": ["major"],
       "automerge": false,
       "labels": ["renovate", "major"]
+    },
+    {
+      "description": "n8n: the newest minor is always a beta and 3.x is still a prerelease; merge by hand after checking the release channel",
+      "matchPackageNames": ["n8nio/n8n", "docker.n8n.io/n8nio/n8n"],
+      "automerge": false
     },
     {
       "description": "Immich ships breaking changes in minors: group server + ML, never automerge",
