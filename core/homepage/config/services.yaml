@@ -386,3 +386,25 @@
             key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
             enableQueue: true
             fields: ["queued"]
+
+# Books: library (Calibre-Web Automated) and the wanted list (LazyLibrarian, no Homepage widget).
+- Books:
+    - Library:
+        href: https://books.mbuz.uk
+        description: Calibre-Web, Send to Kindle
+        icon: calibre-web
+        server: apps
+        container: calibre-web
+        widget:
+            type: calibreweb
+            url: http://calibre-web:8083
+            username: mbuz
+            password: "{{HOMEPAGE_VAR_CALIBREWEB_PASS}}"
+            fields: ["books", "authors", "series"]
+
+    - LazyLibrarian:
+        href: https://lazylibrarian.mbuz.uk
+        description: Wanted books, downloads
+        icon: lazylibrarian
+        server: apps
+        container: lazylibrarian
