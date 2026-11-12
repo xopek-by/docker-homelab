@@ -36,7 +36,7 @@ One-way sync of "My Drive" into the Seafile library **Google Drive**, every
    [rclone](https://rclone.org/downloads/) installed:
 
    ```
-   rclone authorize "drive" "eyJzY29wZSI6ImRyaXZlLnJlYWRvbmx5In0="
+   rclone authorize "drive" "eyJzY29wZSI6ImRyaXZlLnJlYWRvbmx5In0"
    ```
 
    (the base64 is `{"scope":"drive.readonly"}`). Log in to Google and copy the
