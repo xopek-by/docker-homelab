@@ -1,13 +1,9 @@
 # Google Drive -> Seafile sync
 
-One-way sync of "My Drive" into the folder **Google Drive** (`DEST_DIR`) of
-an existing Seafile library (normally your own "My Library"), every
+One-way sync of "My Drive" into the Seafile library **Google Drive**, every
 15 minutes (`SYNC_INTERVAL`). Runs on `cloud` (VM 102) next to Seafile as
 [rclone](https://rclone.org/) in a loop (`sync.sh`).
 
-- Only `DEST_DIR` is mirrored: the rest of the library is never touched.
-  Don't put your own files into that folder, the next run deletes anything
-  that is not in Drive.
 - Drive is the source of truth: files deleted in Drive are deleted in Seafile
   as well. They stay recoverable from the library history / trash in Seafile.
 - A run that would delete more than `MAX_DELETE` files stops and alerts
@@ -34,9 +30,8 @@ an existing Seafile library (normally your own "My Library"), every
 
 1. **Seafile sync user.** In Seafile: System Admin -> Users -> Add user, e.g.
    `gdrive-sync@mbuz.uk` with a long random password, no 2FA. A separate
-   account keeps 2FA on your own login and limits the sync to one library.
-   Then share **your** library (e.g. "My Library") with this user with
-   **Read-Write** permission.
+   account keeps the sync away from your own libraries. When the library has
+   been created, share it with your own account (read-only is enough).
 2. **Google token.** On a PC with a browser and
    [rclone](https://rclone.org/downloads/) installed:
 
@@ -53,8 +48,8 @@ an existing Seafile library (normally your own "My Library"), every
    sudo sh setup.sh
    ```
 
-   Paste the token, the Seafile user, password and the library name. The
-   script checks that both remotes are reachable.
+   Paste the token, the Seafile user and password. The script checks both
+   remotes and creates the library.
 4. The container picks up the config within a minute: `docker logs -f gdrive-sync`.
 
 ## Operations

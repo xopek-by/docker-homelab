@@ -1,14 +1,11 @@
 #!/bin/sh
 # Google Drive -> Seafile one-way sync loop.
 # Remotes "gdrive" and "seafile" are defined in /config/rclone/rclone.conf.
-# The "seafile" remote points at an existing library; Drive goes into DEST_DIR inside it.
-# rclone sync only touches DEST_DIR, the rest of the library is left alone.
 # Telegram gets a message only when the state changes (first failure, recovery).
 set -u
 
 INTERVAL=${SYNC_INTERVAL:-900}
 MAX_DELETE=${MAX_DELETE:-500}
-DEST_DIR=${DEST_DIR:-Google Drive}
 CONF_DIR=/config/rclone
 LOG=$CONF_DIR/sync.log
 RUN_LOG=/tmp/run.log
@@ -30,12 +27,6 @@ notify() {
         || echo "telegram notification failed"
 }
 
-if [ -z "$DEST_DIR" ] || [ "$DEST_DIR" = "/" ]; then
-    # An empty target would make rclone mirror Drive over the whole library
-    echo "DEST_DIR must name a folder inside the library, refusing to start"
-    exit 1
-fi
-
 if [ ! -s "$CONF_DIR/rclone.conf" ]; then
     echo "No $CONF_DIR/rclone.conf yet - run setup.sh (see README). Waiting."
 fi
@@ -48,7 +39,7 @@ while :; do
 
     started=$(date +%s)
     echo "$(date '+%F %T') sync started"
-    rclone sync gdrive: "seafile:$DEST_DIR" \
+    rclone sync gdrive: seafile: \
         --fast-list \
         --drive-export-formats docx,xlsx,pptx,svg \
         --drive-skip-dangling-shortcuts \

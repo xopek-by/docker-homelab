@@ -13,8 +13,6 @@ services:
       - SYNC_INTERVAL=${SYNC_INTERVAL:-900}
       # Safety net: a run that would delete more files than this stops and alerts instead
       - MAX_DELETE=${MAX_DELETE:-500}
-      # Folder inside the Seafile library that mirrors Drive. Never empty: sync would own the whole library
-      - DEST_DIR=${DEST_DIR:-Google Drive}
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
       - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID:-}
       - TELEGRAM_THREAD_ID=${TELEGRAM_THREAD_ID:-}

@@ -6,6 +6,7 @@
 set -eu
 
 CONF_DIR=${CONFIG_DIR:-/opt/docker_data/gdrive-sync}
+LIBRARY=${SEAFILE_LIBRARY:-Google Drive}
 SEAFILE_URL=${SEAFILE_URL:-https://seafile.mbuz.uk}
 
 install -d -m 700 "$CONF_DIR"
@@ -20,18 +21,15 @@ echo "Seafile user (e-mail of the sync account):"
 read -r SF_USER
 printf 'Seafile password: '
 stty -echo; read -r SF_PASS; stty echo; echo
-echo "Seafile library to write into (shared with the sync user read-write) [My Library]:"
-read -r LIBRARY
-LIBRARY=${LIBRARY:-My Library}
 
 rc config create gdrive drive scope=drive.readonly token="$TOKEN" --non-interactive >/dev/null
 rc config create seafile seafile url="$SEAFILE_URL" user="$SF_USER" pass="$SF_PASS" \
-    library="$LIBRARY" --obscure --non-interactive >/dev/null
+    library="$LIBRARY" create_library=true --obscure --non-interactive >/dev/null
 chmod 600 "$CONF_DIR/rclone.conf"
 
 echo "Checking Google Drive..."
 rc lsd gdrive: --max-depth 1 | head -n 10
 echo "Checking Seafile..."
-rc lsd seafile: --max-depth 1 | head -n 10
+rc mkdir seafile:
 rc about seafile: || true
 echo "Done. Restart the stack (or wait a minute) and watch: docker logs -f gdrive-sync"
