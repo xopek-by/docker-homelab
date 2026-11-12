@@ -22,7 +22,7 @@ One-way sync of "My Drive" into the Seafile library **Google Drive**, every
 
 | Path | What |
 | --- | --- |
-| `sync.sh` | The loop, mounted into the container |
+| `sync.sh` | The loop (this directory is mounted as `/app`, picked up on restart) |
 | `setup.sh` | One-time creation of `rclone.conf` |
 | `/opt/docker_data/gdrive-sync/rclone.conf` | Google token + Seafile credentials (not in git) |
 | `/opt/docker_data/gdrive-sync/sync.log` | rclone log of all runs (last 20000 lines) |

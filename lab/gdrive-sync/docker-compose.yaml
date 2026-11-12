@@ -6,7 +6,7 @@ services:
     image: rclone/rclone:latest
     container_name: gdrive-sync
     restart: unless-stopped
-    entrypoint: ["/bin/sh", "/sync.sh"]
+    entrypoint: ["/bin/sh", "/app/sync.sh"]
     environment:
       - TZ=${TIME_ZONE:-Europe/Warsaw}
       # Seconds between the end of one run and the start of the next
@@ -18,4 +18,6 @@ services:
       - TELEGRAM_THREAD_ID=${TELEGRAM_THREAD_ID:-}
     volumes:
       - ${CONFIG_DIR:-/opt/docker_data/gdrive-sync}:/config/rclone
-      - ./sync.sh:/sync.sh:ro
+      # Mount the directory, not the file: git replaces sync.sh with a new inode on pull,
+      # a single-file bind mount would keep showing the old version until the container is recreated
+      - ./:/app:ro
