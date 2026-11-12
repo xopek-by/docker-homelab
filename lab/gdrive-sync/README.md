@@ -10,6 +10,7 @@ One-way sync of "My Drive" into the Seafile library **Google Drive**, every
   instead (protects against an empty or broken Drive listing).
 - Google Docs/Sheets/Slides/Drawings are exported as docx/xlsx/pptx/svg.
   Forms, Sites and Maps cannot be exported and are skipped.
+- Files Google flagged as malware are downloaded anyway (`--drive-acknowledge-abuse`).
 - "Shared with me" and the Drive trash are not synced.
 - Google access is read-only (`drive.readonly` scope).
 - Telegram (Homelab group, Alerts topic) gets a message on the first failed

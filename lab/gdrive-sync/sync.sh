@@ -43,6 +43,7 @@ while :; do
         --fast-list \
         --drive-export-formats docx,xlsx,pptx,svg \
         --drive-skip-dangling-shortcuts \
+        --drive-acknowledge-abuse \
         --max-delete "$MAX_DELETE" \
         --transfers 4 --checkers 8 \
         --retries 3 --low-level-retries 10 \
