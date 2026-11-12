@@ -1,0 +1,60 @@
+# Books: Calibre-Web Automated (library, web reader, Send-to-Kindle)
+# + LazyLibrarian (wanted list, searches Prowlarr indexers, downloads via Transmission).
+#
+# Flow: LazyLibrarian -> Transmission (/mnt/media/transmission/completed/books)
+#       -> LazyLibrarian copies the book into /srv/books/ingest
+#       -> CWA imports it into /srv/books/library (converted to EPUB) and deletes the copy.
+# The library lives on a dedicated local disk of VM 101 (/srv/books), not on the
+# SMB share: CWA writes metadata.db constantly and SQLite over CIFS is unsafe.
+
+x-common-env: &common-env
+  PUID: ${PUID:-1000}
+  PGID: ${PGID:-1000}
+  TZ: ${TZ:-Europe/Warsaw}
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+
+services:
+  calibre-web:
+    image: crocodilestick/calibre-web-automated:latest
+    container_name: calibre-web
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+      NETWORK_SHARE_MODE: "false"
+    volumes:
+      - ${CONFIG_ROOT:-/opt/docker_data}/calibre-web:/config
+      - ${BOOKS_ROOT:-/srv/books}/ingest:/cwa-book-ingest
+      - ${BOOKS_ROOT:-/srv/books}/library:/calibre-library
+    # No published port: reachable only through NPM (books.mbuz.uk) with Authelia,
+    # CWA logs the user in from the Remote-User header.
+    networks: [proxy]
+    logging: *logging
+
+  lazylibrarian:
+    image: lscr.io/linuxserver/lazylibrarian:latest
+    container_name: lazylibrarian
+    restart: unless-stopped
+    environment: *common-env
+    volumes:
+      - ${CONFIG_ROOT:-/opt/docker_data}/lazylibrarian:/config
+      # Same path as on the host, so Transmission downloads are found as-is
+      - ${MEDIA_ROOT:-/mnt/media}:/mnt/media
+      - ${BOOKS_ROOT:-/srv/books}/ingest:/ingest
+    networks: [proxy, media, transmission]
+    logging: *logging
+
+networks:
+  proxy:
+    external: true
+  # Network of the media stack: Prowlarr pushes indexers to LazyLibrarian
+  media:
+    external: true
+    name: media_media
+  # See lab/media: talk to transmission-openvpn:9091 over its own bridge
+  transmission:
+    external: true
+    name: transmission_default
