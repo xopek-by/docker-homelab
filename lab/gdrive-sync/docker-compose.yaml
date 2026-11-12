@@ -1,0 +1,21 @@
+# One-way Google Drive -> Seafile sync (rclone in a loop). Runs on docker-cloud next to Seafile.
+# rclone.conf (Google token, Seafile credentials) lives outside git in /opt/docker_data/gdrive-sync,
+# see README.md for the one-time setup.
+services:
+  gdrive-sync:
+    image: rclone/rclone:latest
+    container_name: gdrive-sync
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "/sync.sh"]
+    environment:
+      - TZ=${TIME_ZONE:-Europe/Warsaw}
+      # Seconds between the end of one run and the start of the next
+      - SYNC_INTERVAL=${SYNC_INTERVAL:-900}
+      # Safety net: a run that would delete more files than this stops and alerts instead
+      - MAX_DELETE=${MAX_DELETE:-500}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID:-}
+      - TELEGRAM_THREAD_ID=${TELEGRAM_THREAD_ID:-}
+    volumes:
+      - ${CONFIG_DIR:-/opt/docker_data/gdrive-sync}:/config/rclone
+      - ./sync.sh:/sync.sh:ro

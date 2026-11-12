@@ -32,6 +32,7 @@ Docker Compose stacks for my homelab. Each project lives in its own directory wi
 | Project | Description |
 | --- | --- |
 | [Bookstack](lab/bookstack/README.md) | Wiki |
+| [Google Drive sync](lab/gdrive-sync/README.md) | One-way Google Drive -> Seafile sync (rclone) |
 | [Guacamole](lab/guacamole/README.md) | Remote desktop gateway |
 | [Mealie](lab/mealie/README.md) | Recipe manager |
 | [Media](lab/media/README.md) | Plex, Seerr, Prowlarr, Radarr, Sonarr |
