@@ -34,5 +34,20 @@ including the books disk.
    (`/mnt/media/transmission/completed/books` on the host).
 3. When the download is done, LazyLibrarian copies the book into `/ingest`
    (the torrent keeps seeding).
-4. CWA imports it, converts it to EPUB, fetches metadata and a cover.
-5. Send it to the Kindle from the book page.
+4. CWA imports it (subfolders included), converts it to EPUB and runs the
+   Kindle EPUB fixer.
+5. CWA auto-sends every new book to the Kindle (`auto_send_enabled` for user
+   `mbuz`, 5 min delay). Needs SMTP in Admin -> Email server and the Kindle
+   address in the user profile; the sender must be on Amazon's approved list.
+
+Prowlarr pushes its indexers to LazyLibrarian (application "LazyLibrarian",
+full sync, book categories only), so a new indexer in Prowlarr shows up there
+without manual steps.
+
+## Accounts
+
+- CWA user `mbuz` (admin) matches the Authelia user; login comes from the
+  `Remote-User` header. Local password for API/OPDS/Homepage:
+  `/opt/docker_data/calibre-web/ADMIN_PASSWORD` (also `HOMEPAGE_VAR_CALIBREWEB_PASS`
+  in the homepage stack).
+- LazyLibrarian has no own login (Authelia only); API key in its `config.ini`.
