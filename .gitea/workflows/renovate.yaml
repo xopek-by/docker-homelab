@@ -9,7 +9,7 @@ on:
 jobs:
   renovate:
     runs-on: ubuntu-latest
-    container: renovate/renovate:44.236.4
+    container: renovate/renovate:44.237.1
     timeout-minutes: 30
     steps:
       - name: Run Renovate
