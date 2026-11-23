@@ -77,6 +77,30 @@ services:
       - '5055:5055'
     networks: [media]
     logging: *logging
+  # Alerts in Telegram when a request or download is stuck (see watchdog/watchdog.py).
+  watchdog:
+    image: python:3.13-alpine
+    container_name: media-watchdog
+    restart: unless-stopped
+    command: ["sh", "/app/run.sh"]
+    environment:
+      TZ: ${TZ:-Europe/Warsaw}
+      TG_CHAT_ID: ${TG_CHAT_ID:?Telegram chat id}
+      TG_TOPIC_ID: ${TG_TOPIC_ID:-}
+      STUCK_HOURS: ${STUCK_HOURS:-3}
+      REALERT_HOURS: ${REALERT_HOURS:-24}
+      CHECK_INTERVAL: ${CHECK_INTERVAL:-1800}
+    volumes:
+      - ./watchdog:/app:ro
+      - ${CONFIG_ROOT:-/opt/docker_data}/media-watchdog:/state
+      # API keys are read from the apps' own configs; nothing is copied into env
+      - ${CONFIG_ROOT:-/opt/docker_data}/radarr/config.xml:/keys/radarr/config.xml:ro
+      - ${CONFIG_ROOT:-/opt/docker_data}/sonarr/config.xml:/keys/sonarr/config.xml:ro
+      - ${CONFIG_ROOT:-/opt/docker_data}/seerr/settings.json:/keys/seerr/settings.json:ro
+      - ${CONFIG_ROOT:-/opt/docker_data}/telegram/BOT_TOKEN:/keys/telegram/BOT_TOKEN:ro
+    networks: [media]
+    depends_on: [radarr, sonarr, seerr]
+    logging: *logging
 
 networks:
   media:

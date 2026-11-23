@@ -11,6 +11,7 @@ BitTorrent traffic stays inside NordVPN.
 | Prowlarr | https://prowlarr.mbuz.uk | Indexers (RuTracker, RuTor, ...), synced to Radarr/Sonarr |
 | Radarr | https://radarr.mbuz.uk | Movies |
 | Sonarr | https://sonarr.mbuz.uk | TV shows |
+| Watchdog | - | Telegram alerts for stuck requests and downloads (see below) |
 
 Prowlarr, Radarr and Sonarr publish no ports. They sit on the `proxy` network
 with NPM and use `AuthenticationMethod=External` in `config.xml`: login is done
@@ -82,3 +83,16 @@ converted, which is cheap.
 2. Seerr: open `http://10.0.0.101:5055`, sign in with Plex, add Radarr
    (`http://radarr:7878`) and Sonarr (`http://sonarr:8989`), profile
    `1080p Direct Play`.
+
+## Watchdog
+
+`watchdog/watchdog.py` runs every 30 minutes in a plain `python:3.13-alpine`
+container and posts to the Telegram topic Media when:
+
+- a Seerr request is approved for more than `STUCK_HOURS` (3) but Radarr/Sonarr
+  has neither the file nor a download (for TV: aired, monitored episodes only).
+  It re-triggers the search once, then reports;
+- a download has made no progress for `STUCK_HOURS`, or is blocked on import.
+
+The same problem is reported again at most once per `REALERT_HOURS` (24).
+State: `/opt/docker_data/media-watchdog/state.json`.
