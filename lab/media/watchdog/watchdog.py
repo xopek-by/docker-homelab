@@ -96,10 +96,15 @@ def report(key, text):
         alerted[key] = NOW
 
 
+# Right after a restart Radarr/Sonarr report an empty queue until they re-read the
+# download client, which looks like "nothing is downloading". Skip such apps.
+WARMUP = 15 * 60
+ready = {app for app in ARR if NOW - ts(arr(app, "system/status")["startTime"]) >= WARMUP}
+
 # --- Queues: which items are downloading, and are they stuck -------------------
 queued = {"radarr": set(), "sonarr": set()}   # movieId / seriesId with an active download
-new_progress = {}
-for app in ARR:
+new_progress = dict(progress) if len(ready) < len(ARR) else {}
+for app in ready:
     for q in arr(app, "queue?pageSize=200&includeMovie=true&includeSeries=true")["records"]:
         owner = q.get("movieId") if app == "radarr" else q.get("seriesId")
         queued[app].add(owner)
@@ -135,6 +140,8 @@ for r in seerr("request?take=100&filter=approved&sort=added")["results"]:
     if age < STUCK:
         continue
     app = "radarr" if r["type"] == "movie" else "sonarr"
+    if app not in ready:
+        continue
     ext = media.get("externalServiceId")
     if not ext or ext in queued[app]:
         continue
@@ -167,8 +174,10 @@ for r in seerr("request?take=100&filter=approved&sort=added")["results"]:
     report(key, f"🔍 <b>{name}</b> requested by {who} {hours(age)} ago, nothing is downloading "
                 f"({detail}). Search re-triggered; if it keeps failing, check Interactive Search:\n{link}")
 
-# Forget alerts for problems that are gone, so a new occurrence is reported at once.
-alerted = {k: v for k, v in alerted.items() if k in active}
+# Forget alerts for problems that are gone, so a new occurrence is reported at once
+# (keep everything while some app was skipped: its problems were not checked).
+if len(ready) == len(ARR):
+    alerted = {k: v for k, v in alerted.items() if k in active}
 
 for text in messages:
     if os.environ.get("DRY_RUN"):     # test mode: print instead of sending
