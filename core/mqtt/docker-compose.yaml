@@ -29,10 +29,10 @@ services:
     network_mode: host
     depends_on:
       - mosquitto
-    env_file:
-      # MQTT_USERNAME / MQTT_PASSWORD (and PSN_ACCOUNTS if the user ever wants "now playing")
-      - /opt/docker_data/mqtt/ps5-mqtt.env
     environment:
+      # Password comes from the Komodo stack environment (not in git)
+      MQTT_USERNAME: ps5
+      MQTT_PASSWORD: ${PS5_MQTT_PASSWORD:?set in Komodo stack environment}
       MQTT_HOST: 127.0.0.1
       MQTT_PORT: "1883"
       DEVICE_CHECK_INTERVAL: "5000"
