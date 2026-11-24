@@ -43,3 +43,20 @@ Version is pinned; Renovate opens PRs. HA versions are `YYYY.M.patch`, so
 monthly releases count as "minor" and are merged automatically after the
 3-day soak. Read the release notes' "Backward-incompatible changes" if
 something breaks after an update.
+
+## Local-only devices and Wi-Fi changes
+
+All devices are controlled locally; vendor clouds are blocked in AdGuard or
+were used only once for pairing. Tokens and keys needed to re-add them live in
+`/opt/docker_data/homeassistant/local_devices.yaml` (600, not in git; copy on
+CT112 in `~/.config/homelab-local-devices.yaml`).
+
+Changing the router: keep the same SSID and password on 2.4 GHz and nothing
+needs to be redone. DHCP reservations are on the AdGuard Pi, not on the router.
+Otherwise:
+
+- Yeelight bulb: `tools/yeelight_wifi.py <ip> <token>` while it is still online
+  (or against `192.168.4.1` after a reset), then nothing else changes.
+- NOUS plug (Tuya): re-pair in Smart Life, which changes its local key; fetch the
+  new key and update the LocalTuya device.
+- Bambu A1: enter the new Wi-Fi on the printer screen.
