@@ -39,6 +39,9 @@ services:
     environment: *common-env
     volumes:
       - ${CONFIG_ROOT:-/opt/docker_data}/prowlarr:/config
+    # Loopback only: Home Assistant (host network) reads the API; users go through NPM + Authelia
+    ports:
+      - '127.0.0.1:9696:9696'
     networks: [media, proxy]
     logging: *logging
 
@@ -50,6 +53,9 @@ services:
     volumes:
       - ${CONFIG_ROOT:-/opt/docker_data}/radarr:/config
       - ${MEDIA_ROOT:-/mnt/media}:/mnt/media
+    # Loopback only: Home Assistant (host network) reads the API; users go through NPM + Authelia
+    ports:
+      - '127.0.0.1:7878:7878'
     networks: [media, proxy, transmission]
     logging: *logging
 
@@ -61,6 +67,9 @@ services:
     volumes:
       - ${CONFIG_ROOT:-/opt/docker_data}/sonarr:/config
       - ${MEDIA_ROOT:-/mnt/media}:/mnt/media
+    # Loopback only: Home Assistant (host network) reads the API; users go through NPM + Authelia
+    ports:
+      - '127.0.0.1:8989:8989'
     networks: [media, proxy, transmission]
     logging: *logging
 
