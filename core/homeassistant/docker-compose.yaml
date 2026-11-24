@@ -1,0 +1,23 @@
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:2026.11.3
+    container_name: homeassistant
+    # Host network is required for local discovery (mDNS/SSDP, Yeelight multicast,
+    # Bambu Lab SSDP) and for ESPHome devices. Listens on 10.0.0.101:8123.
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Warsaw
+    volumes:
+      - /opt/docker_data/homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+    deploy:
+      resources:
+        limits:
+          memory: 1500M
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://127.0.0.1:8123/manifest.json"]
+      interval: 30s
+      timeout: 10s
+      start_period: 120s
+      retries: 3
