@@ -1,0 +1,46 @@
+# MQTT for Home Assistant: Mosquitto broker + bridges that publish devices via MQTT discovery.
+# Secrets live outside git in /opt/docker_data/mqtt (passwd for Mosquitto, *.env for bridges).
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2.1.4-alpine
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      # Not bound to 10.0.0.101: Docker starts before the VM gets its address after a reboot.
+      # LAN clients (ESPHome, Zigbee2MQTT, car-dash later) may connect; anonymous access is off.
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - /opt/docker_data/mqtt/passwd:/mosquitto/config/passwd:ro
+      - /opt/docker_data/mqtt/data:/mosquitto/data
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 1883"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # PlayStation 5 power state and wake/standby over the LAN (DDP); Remote Play credentials are
+  # created once in its web UI (http://10.0.0.101:8645) and kept in /opt/docker_data/mqtt/ps5.
+  ps5-mqtt:
+    image: ghcr.io/funkeyflo/ps5-mqtt:1.9.3
+    container_name: ps5-mqtt
+    restart: unless-stopped
+    # Required: device discovery uses UDP broadcasts on the LAN.
+    network_mode: host
+    depends_on:
+      - mosquitto
+    env_file:
+      # MQTT_USERNAME / MQTT_PASSWORD (and PSN_ACCOUNTS if the user ever wants "now playing")
+      - /opt/docker_data/mqtt/ps5-mqtt.env
+    environment:
+      MQTT_HOST: 127.0.0.1
+      MQTT_PORT: "1883"
+      DEVICE_CHECK_INTERVAL: "5000"
+      DEVICE_DISCOVERY_INTERVAL: "60000"
+      INCLUDE_PS4_DEVICES: "false"
+      FRONTEND_PORT: "8645"
+      CREDENTIAL_STORAGE_PATH: /config/credentials.json
+      PSN_AUTH_STORE_DIR: /config
+      DEBUG: "@ha:ps5:*"
+    volumes:
+      - /opt/docker_data/mqtt/ps5:/config
