@@ -1,0 +1,12 @@
+[Unit]
+Description=Origin firewall for NPM (only LAN, Tailscale and Cloudflare on 80/443)
+After=docker.service
+PartOf=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/origin-firewall.sh
+
+[Install]
+WantedBy=docker.service

@@ -19,3 +19,28 @@ After starting the application, you can access the web interface and log in with
 -   **Password**: `changeme`
 
 You will be prompted to change the password after your first login.
+
+## Origin firewall (host `apps`, not part of the stack)
+
+The router forwards WAN 80/443 straight to apps, so NPM is reachable without
+Cloudflare. `host/origin-firewall.sh` (installed to `/usr/local/sbin/`, run by
+`origin-firewall.service`, re-applied on every Docker restart) adds rules to
+`DOCKER-USER`:
+
+- 80/443: only LAN `10.0.0.0/24`, Tailscale `100.64.0.0/10`, Docker bridges
+  on the VM and Cloudflare edge ranges (refreshed from cloudflare.com/ips-v4,
+  cached in `/etc/origin-firewall/cf-ips-v4`). Drops are logged with prefix
+  `origin-drop-web:`.
+- 81 (NPM admin UI): LAN and Tailscale only.
+
+Install / update:
+
+    sudo install -m 755 host/origin-firewall.sh /usr/local/sbin/
+    sudo install -m 644 host/origin-firewall.service /etc/systemd/system/
+    sudo systemctl daemon-reload && sudo systemctl enable --now origin-firewall
+
+Because only Cloudflare (and LAN) can reach NPM, the public proxy hosts take
+the client IP from `CF-Connecting-IP` (`real_ip_header CF-Connecting-IP;` at
+the top of their Advanced config). Without it the apps behind them saw
+Cloudflare edge IPs, and any client could inject `X-Real-IP` through
+Cloudflare.
