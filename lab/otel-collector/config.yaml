@@ -1,0 +1,87 @@
+# OpenTelemetry Collector for a Docker host.
+# Collects logs of every container (json-file driver) and accepts OTLP from local apps,
+# then sends everything to OpenObserve and to the Zabbix APM proxy.
+
+extensions:
+  docker_observer:
+    endpoint: unix:///var/run/docker.sock
+  file_storage:
+    directory: /var/lib/otelcol
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+receivers:
+  # One filelog receiver per running container, created and removed as containers come and go
+  receiver_creator/docker_logs:
+    watch_observers: [docker_observer]
+    receivers:
+      filelog:
+        # Skip the telemetry pipeline itself: its own logs would feed back into it
+        rule: type == "container" && name != "otel-collector" && name != "openobserve" && name != "clickhouse-otel"
+        config:
+          include:
+            - /var/lib/docker/containers/`container_id`/`container_id`-json.log
+          start_at: end
+          storage: file_storage
+          include_file_path: false
+          operators:
+            # Docker json-file format: {"log": "...", "stream": "stdout", "time": "..."}
+            - type: container
+              format: docker
+              add_metadata_from_filepath: false
+        resource_attributes:
+          service.name: '`name`'
+          container.name: '`name`'
+          container.image.name: '`image`'
+
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 250
+    spike_limit_mib: 50
+  resource/host:
+    attributes:
+      - key: host.name
+        value: ${env:HOST_NAME}
+        action: upsert
+      - key: deployment.environment.name
+        value: homelab
+        action: upsert
+  batch:
+    send_batch_size: 1000
+    timeout: 5s
+
+exporters:
+  otlphttp/openobserve:
+    endpoint: ${env:OPENOBSERVE_ENDPOINT}
+    headers:
+      Authorization: Basic ${env:OPENOBSERVE_AUTH}
+      stream-name: default
+  # Zabbix proxy APM collector accepts OTLP/gRPC only
+  otlp/zabbix:
+    endpoint: ${env:ZABBIX_APM_ENDPOINT}
+    tls:
+      insecure: true
+
+service:
+  extensions: [docker_observer, file_storage, health_check]
+  pipelines:
+    logs:
+      receivers: [receiver_creator/docker_logs, otlp]
+      processors: [memory_limiter, resource/host, batch]
+      exporters: [otlphttp/openobserve, otlp/zabbix]
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resource/host, batch]
+      exporters: [otlphttp/openobserve, otlp/zabbix]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, resource/host, batch]
+      exporters: [otlphttp/openobserve, otlp/zabbix]

@@ -1,0 +1,30 @@
+services:
+  openobserve:
+    # Docker Hub mirror of public.ecr.aws/zinclabs/openobserve (ECR rate-limits anonymous pulls)
+    image: openobserve/openobserve:latest
+    container_name: openobserve
+    restart: unless-stopped
+    environment:
+      ZO_ROOT_USER_EMAIL: ${ZO_ROOT_USER_EMAIL}
+      ZO_ROOT_USER_PASSWORD: ${ZO_ROOT_USER_PASSWORD}
+      ZO_DATA_DIR: /data
+      # Delete logs/traces/metrics older than this many days
+      ZO_COMPACT_DATA_RETENTION_DAYS: ${RETENTION_DAYS:-30}
+      ZO_TELEMETRY: "false"
+      TZ: Europe/Warsaw
+    ports:
+      # Web UI and OTLP/HTTP ingestion (/api/<org>/v1/logs|traces|metrics)
+      - "5080:5080"
+      # OTLP/gRPC ingestion
+      - "5081:5081"
+    volumes:
+      - ${DATA_FOLDER}:/data
+    deploy:
+      resources:
+        limits:
+          memory: 1500M
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:5080/healthz >/dev/null 2>&1 || curl -fs http://127.0.0.1:5080/healthz >/dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

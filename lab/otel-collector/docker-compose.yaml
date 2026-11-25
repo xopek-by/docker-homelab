@@ -1,0 +1,27 @@
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector
+    restart: unless-stopped
+    # Needs root to read /var/lib/docker/containers and the Docker socket
+    user: "0:0"
+    command: ["--config=/etc/otelcol/config.yaml"]
+    environment:
+      OPENOBSERVE_ENDPOINT: ${OPENOBSERVE_ENDPOINT:-http://10.0.0.101:5080/api/default}
+      OPENOBSERVE_AUTH: ${OPENOBSERVE_AUTH}
+      ZABBIX_APM_ENDPOINT: ${ZABBIX_APM_ENDPOINT:-10.0.0.110:4317}
+      HOST_NAME: ${HOST_NAME}
+    volumes:
+      - ./config.yaml:/etc/otelcol/config.yaml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # File offsets survive restarts, so logs are not sent twice
+      - ${DATA_FOLDER}:/var/lib/otelcol
+    ports:
+      # OTLP from local applications (traces/metrics/logs), forwarded to both backends
+      - "4317:4317"
+      - "4318:4318"
+    deploy:
+      resources:
+        limits:
+          memory: 300M
