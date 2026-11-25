@@ -149,24 +149,14 @@ li[data-name="Gitea"]               { --hl-accent: 132 204 22; }
 li[data-name="AdGuard"]             { --hl-accent: 74 222 128; }
 li[data-name="Nginx Proxy Manager"] { --hl-accent: 244 114 182; }
 li[data-name="Zabbix"]              { --hl-accent: 239 68 68; }
+li[data-name="Weather"]             { --hl-accent: 251 191 36; }
 li[data-name="Air quality"]         { --hl-accent: 16 185 129; }
-li[data-name="Today"]               { --hl-accent: 251 191 36; }
-li[data-name="Tomorrow"]            { --hl-accent: 56 189 248; }
-li[data-name="Daylight"]            { --hl-accent: 249 115 22; }
-/* Weather icons keep a small colour point */
+li[data-name="Home Assistant"]      { --hl-accent: 56 189 248; }
+li[data-name="This week"]           { --hl-accent: 249 115 22; }
+/* MDI icons keep a small colour point */
+li[data-name="Weather"] .service-icon [style*="mask"]     { background: #fbbf24 !important; }
 li[data-name="Air quality"] .service-icon [style*="mask"] { background: #34d399 !important; }
-li[data-name="Today"] .service-icon [style*="mask"]       { background: #fbbf24 !important; }
-li[data-name="Tomorrow"] .service-icon [style*="mask"]    { background: #38bdf8 !important; }
-li[data-name="Daylight"] .service-icon [style*="mask"]    { background: #fb923c !important; }
-
-/* Sunrise / sunset come as "2026-11-11T07:06": show only the HH:MM tail */
-li[data-name="Daylight"] .service-block:nth-child(-n+2) > div:first-child {
-  width: 4.45ch;
-  margin: 0 auto;
-  overflow: hidden;
-  white-space: nowrap;
-  direction: rtl;
-}
+li[data-name="This week"] .service-icon [style*="mask"]   { background: #fb923c !important; }
 
 /* Apps */
 li[data-name="Grafana"]     { --hl-accent: 249 115 22; }

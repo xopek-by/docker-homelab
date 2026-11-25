@@ -16,7 +16,7 @@ quicklaunch:
 
 # Two tabs. Every group is pinned to a tab, so nothing
 # leaks onto both. Group headers are shown: each row is one logical section.
-#   Home:  Hypervisor | Storage side by side (2x2 each), Platform (5), Outside (4), Apps (5)
+#   Home:  Hypervisor | Storage side by side (2x2 each), Platform (5), House (4), Apps (5)
 #   Media: Watching, Automation, Activity (calendar + queues), Books
 layout:
   Overview:
@@ -34,7 +34,7 @@ layout:
     tab: Home
     style: row
     columns: 5
-  Outside:
+  House:
     tab: Home
     style: row
     columns: 4

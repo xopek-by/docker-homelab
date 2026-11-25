@@ -147,98 +147,83 @@
             url: "{{HOMEPAGE_VAR_ZABBIX_URL}}"
             key: "{{HOMEPAGE_VAR_ZABBIX_KEY}}"
 
-# Gdansk outside: air quality, today/tomorrow forecast, daylight (Open-Meteo, no API key).
-- Outside:
+# Home Assistant (long-lived token "homepage"): weather + air from HA, the house right now, this week's stats.
+# Values are HA templates, so rounding and units are done on the HA side (max 4 fields per card).
+- House:
+    - Weather:
+        href: https://home.mbuz.uk/dash-weather
+        description: Gdansk, met.no
+        icon: mdi-weather-partly-cloudy
+        widget:
+            type: homeassistant
+            url: "{{HOMEPAGE_VAR_HA_URL}}"
+            key: "{{HOMEPAGE_VAR_HA_KEY}}"
+            custom:
+                - template: "{{ state_attr('weather.home','temperature') | round(0) | int }} °C"
+                  label: Now
+                - template: "{{ states('weather.home') | replace('partlycloudy','partly cloudy') | replace('clear-night','clear') | replace('-',' ') }}"
+                  label: Sky
+                - template: "{{ state_attr('weather.home','wind_speed') | round(0) | int }} km/h"
+                  label: Wind
+                - template: "{{ state_attr('weather.home','humidity') | round(0) | int }} %"
+                  label: Humidity
+
     - Air quality:
-        href: https://www.iqair.com/poland/pomerania/gdansk
-        description: European AQI, µg/m³
+        href: https://home.mbuz.uk/dash-weather
+        description: Airly, nearest station
         icon: mdi-air-filter
         widget:
-            type: customapi
-            url: "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=54.372158&longitude=18.638306&current=european_aqi,pm2_5,pm10,nitrogen_dioxide&timezone=Europe%2FWarsaw"
-            refreshInterval: 900000 # 15 min
-            mappings:
-                - field: { current: european_aqi }
-                  label: AQI
-                  format: number
-                - field: { current: pm2_5 }
+            type: homeassistant
+            url: "{{HOMEPAGE_VAR_HA_URL}}"
+            key: "{{HOMEPAGE_VAR_HA_KEY}}"
+            custom:
+                - template: "{{ states('sensor.airly_common_air_quality_index') | float(0) | round(0) | int }}"
+                  label: CAQI
+                - template: "{{ state_attr('sensor.airly_common_air_quality_index','level') }}"
+                  label: Level
+                - template: "{{ states('sensor.airly_pm2_5') | float(0) | round(0) | int }} µg"
                   label: PM2.5
-                  format: float
-                - field: { current: pm10 }
+                - template: "{{ states('sensor.airly_pm10') | float(0) | round(0) | int }} µg"
                   label: PM10
-                  format: float
-                - field: { current: nitrogen_dioxide }
-                  label: NO2
-                  format: float
 
-    - Today:
-        href: https://www.yr.no/en/forecast/daily-table/2-3099434/Poland/Pomerania/Gda%C5%84sk/Gda%C5%84sk
-        description: Gdansk forecast
-        icon: mdi-weather-partly-cloudy
+    - Home Assistant:
+        href: https://home.mbuz.uk/
+        description: Right now
+        icon: home-assistant
+        server: apps
+        container: homeassistant
         widget:
-            type: customapi
-            url: "https://api.open-meteo.com/v1/forecast?latitude=54.372158&longitude=18.638306&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,sunrise,sunset,daylight_duration&forecast_days=2&timezone=Europe%2FWarsaw"
-            refreshInterval: 900000 # 15 min
-            mappings:
-                - field: { daily: { temperature_2m_max: 0 } }
-                  label: Max
-                  format: float
-                  suffix: "°C"
-                - field: { daily: { temperature_2m_min: 0 } }
-                  label: Min
-                  format: float
-                  suffix: "°C"
-                - field: { daily: { precipitation_probability_max: 0 } }
-                  label: Rain
-                  format: percent
-                - field: { daily: { wind_speed_10m_max: 0 } }
-                  label: Wind
-                  format: number
-                  suffix: " km/h"
+            type: homeassistant
+            url: "{{HOMEPAGE_VAR_HA_URL}}"
+            key: "{{HOMEPAGE_VAR_HA_KEY}}"
+            custom:
+                # The printer chamber light is a printer detail, not a room light
+                - template: "{{ states.light | rejectattr('entity_id','search','chamber_light') | selectattr('state','eq','on') | list | count }} / {{ states.light | rejectattr('entity_id','search','chamber_light') | list | count }}"
+                  label: Lights
+                - template: "{{ (states('sensor.smart_plug_a8_power') | float(0) + states('sensor.kitchen_led_power') | float(0)) | round(0) | int }} W"
+                  label: Plugs
+                - template: "{% set s = states('sensor.a1_03900d610821187_print_status') %}{% if s in ['running','pause','prepare'] %}{{ states('sensor.a1_03900d610821187_print_progress') }} %{% else %}{{ s }}{% endif %}"
+                  label: Printer
+                - template: "{% if is_state('switch.ps5_540_power','on') %}{{ states('sensor.ps5_540_activity') | replace('none','on') }}{% else %}off{% endif %}"
+                  label: PS5
 
-    - Tomorrow:
-        href: https://www.yr.no/en/forecast/daily-table/2-3099434/Poland/Pomerania/Gda%C5%84sk/Gda%C5%84sk
-        description: Gdansk forecast
-        icon: mdi-weather-partly-cloudy
+    - This week:
+        href: https://home.mbuz.uk/dash-home
+        description: Since Monday
+        icon: mdi-calendar-week
         widget:
-            type: customapi
-            url: "https://api.open-meteo.com/v1/forecast?latitude=54.372158&longitude=18.638306&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,sunrise,sunset,daylight_duration&forecast_days=2&timezone=Europe%2FWarsaw"
-            refreshInterval: 900000 # 15 min
-            mappings:
-                - field: { daily: { temperature_2m_max: 1 } }
-                  label: Max
-                  format: float
-                  suffix: "°C"
-                - field: { daily: { temperature_2m_min: 1 } }
-                  label: Min
-                  format: float
-                  suffix: "°C"
-                - field: { daily: { precipitation_probability_max: 1 } }
-                  label: Rain
-                  format: percent
-                - field: { daily: { wind_speed_10m_max: 1 } }
-                  label: Wind
-                  format: number
-                  suffix: " km/h"
-
-    - Daylight:
-        href: https://www.timeanddate.com/sun/poland/gdansk
-        description: Sunrise and sunset today
-        icon: mdi-weather-sunset
-        widget:
-            type: customapi
-            url: "https://api.open-meteo.com/v1/forecast?latitude=54.372158&longitude=18.638306&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,sunrise,sunset,daylight_duration&forecast_days=2&timezone=Europe%2FWarsaw"
-            refreshInterval: 900000 # 15 min
-            mappings:
-                - field: { daily: { sunrise: 0 } }
-                  label: Sunrise
-                  format: text # "2026-11-11T07:06", custom.css shows only the HH:MM tail
-                - field: { daily: { sunset: 0 } }
-                  label: Sunset
-                  format: text # "2026-11-11T07:06", custom.css shows only the HH:MM tail
-                - field: { daily: { daylight_duration: 0 } }
-                  label: Day length
-                  format: duration
+            type: homeassistant
+            url: "{{HOMEPAGE_VAR_HA_URL}}"
+            key: "{{HOMEPAGE_VAR_HA_KEY}}"
+            custom:
+                - template: "{{ states('sensor.printer_hours_this_week') | float(0) | round(1) }} h"
+                  label: Printer
+                - template: "{{ states('sensor.car_km_this_week') | float(0) | round(0) | int }} km"
+                  label: Car
+                - template: "{{ states('sensor.ps5_played_this_week') | float(0) | round(1) }} h"
+                  label: PS5
+                - template: "{{ states('sensor.plex_watched_this_week') | float(0) | round(1) }} h"
+                  label: Plex
 
 # 5 plain launcher tiles -> one row of 5.
 - Apps:
