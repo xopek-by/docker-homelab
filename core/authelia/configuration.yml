@@ -165,6 +165,7 @@ identity_providers:
         require_pkce: false
         redirect_uris:
           # The web UI origin the user opens Proxmox with
+          - 'https://proxmox.mbuz.uk:8006'
           - 'https://10.0.0.1:8006'
         scopes: ['openid', 'profile', 'email']
         response_types: ['code']
