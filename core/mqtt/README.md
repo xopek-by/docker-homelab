@@ -14,5 +14,5 @@ Users: `homeassistant` (HA MQTT integration), `ps5` (ps5-mqtt). Passwords are in
     docker restart mosquitto
 
 PS5 setup, once: open the web UI, sign in with the PSN account (Remote Play registration),
-then the PS5 shows up in HA via MQTT discovery. "Now playing" needs PSN_ACCOUNTS with an NPSSO
-token in the Komodo stack environment (cloud, optional, not configured).
+then the PS5 shows up in HA via MQTT discovery. "Now playing" comes from PSN: PSN_ACCOUNTS (JSON with the NPSSO token)
+in the Komodo stack environment; refreshed tokens persist in /opt/docker_data/mqtt/ps5/psn-auth.json.

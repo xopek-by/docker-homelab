@@ -42,5 +42,10 @@ services:
       CREDENTIAL_STORAGE_PATH: /config/credentials.json
       PSN_AUTH_STORE_DIR: /config
       DEBUG: "@ha:ps5:*"
+      # PSN account for "now playing" (cloud, read-only). JSON list with the NPSSO token, kept in the
+      # Komodo stack environment: [{"username":"...","npsso":"...","preferred_ps5":"B41F4D7028ED"}]
+      PSN_ACCOUNTS: ${PSN_ACCOUNTS:-[]}
+      ACCOUNT_CHECK_INTERVAL: "5000"
+      ACCOUNT_IDLE_CHECK_INTERVAL: "60000"
     volumes:
       - /opt/docker_data/mqtt/ps5:/config
