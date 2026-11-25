@@ -9,7 +9,7 @@ services:
     environment:
       OPENOBSERVE_ENDPOINT: ${OPENOBSERVE_ENDPOINT:-http://10.0.0.101:5080/api/default}
       OPENOBSERVE_AUTH: ${OPENOBSERVE_AUTH}
-      ZABBIX_APM_ENDPOINT: ${ZABBIX_APM_ENDPOINT:-10.0.0.110:4317}
+      ZABBIX_APM_ENDPOINT: ${ZABBIX_APM_ENDPOINT}
       HOST_NAME: ${HOST_NAME}
     volumes:
       - ./config.yaml:/etc/otelcol/config.yaml:ro
@@ -17,6 +17,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # File offsets survive restarts, so logs are not sent twice
       - ${DATA_FOLDER}:/var/lib/otelcol
+      # ca.crt, client.crt, client.key for the Zabbix APM endpoint (private CA on the Oracle VM)
+      - ${TLS_FOLDER}:/etc/otelcol/tls:ro
     ports:
       # OTLP from local applications (traces/metrics/logs), forwarded to both backends
       - "4317:4317"

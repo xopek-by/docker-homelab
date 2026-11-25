@@ -32,13 +32,13 @@ Docker Compose stacks for my homelab. Each project lives in its own directory wi
 | Project | Description |
 | --- | --- |
 | [Bookstack](lab/bookstack/README.md) | Wiki |
-| [ClickHouse for Zabbix APM](lab/clickhouse-otel/README.md) | Telemetry storage for Zabbix 8.0 APM (docker-cloud) |
 | [Guacamole](lab/guacamole/README.md) | Remote desktop gateway |
 | [Mealie](lab/mealie/README.md) | Recipe manager |
 | [OpenObserve](lab/openobserve/README.md) | Logs, traces and metrics UI over OpenTelemetry (docker-apps) |
 | [OpenTelemetry Collector](lab/otel-collector/README.md) | Container logs and OTLP from each Docker host to OpenObserve and Zabbix APM |
 | [Seafile](lab/seafile/README.md) | File sync and share |
 | [Semaphore UI](lab/semaphore-ui) | Ansible UI |
+| [Zabbix APM](lab/zabbix-apm/README.md) | ClickHouse and APM proxy for Zabbix 8.0 APM (Oracle VM) |
 
 ## Configuration
 
