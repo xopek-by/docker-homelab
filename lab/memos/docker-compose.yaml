@@ -1,0 +1,28 @@
+# Memos: personal diary / notes, Markdown, SQLite.
+# No published port: reachable only through NPM (memos.mbuz.uk), LAN + Tailscale.
+# Memos has its own login; the first registered account becomes the admin.
+services:
+  memos:
+    image: ghcr.io/usememos/memos:stable
+    container_name: memos
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-Europe/Warsaw}
+      MEMOS_PORT: 5230
+    volumes:
+      # SQLite database + uploaded attachments
+      - ${CONFIG_ROOT:-/opt/docker_data}/memos:/var/opt/memos
+    networks: [proxy]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:5230/healthz || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+
+networks:
+  proxy:
+    external: true
