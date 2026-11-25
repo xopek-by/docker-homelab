@@ -1,0 +1,55 @@
+# Zabbix 8.0 APM backend, runs on the Oracle VM next to the Zabbix server and frontend.
+# OTLP from home arrives through host nginx (:443, mTLS, gRPC) -> zabbix-apm-proxy (127.0.0.1:4317) -> ClickHouse.
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: zabbix-apm-clickhouse
+    restart: unless-stopped
+    environment:
+      # Admin user, used only to create the schema and the zabbix user
+      CLICKHOUSE_USER: ${CLICKHOUSE_ADMIN_USER:-default}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_ADMIN_PASSWORD}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+      TZ: Europe/Warsaw
+    ports:
+      # Local only: the Zabbix server, frontend and APM proxy run on this host
+      - "127.0.0.1:8123:8123"
+    volumes:
+      - ${DATA_FOLDER}/clickhouse:/var/lib/clickhouse
+      - ${DATA_FOLDER}/clickhouse-log:/var/log/clickhouse-server
+      - ./config.d/low-memory.xml:/etc/clickhouse-server/config.d/low-memory.xml:ro
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    deploy:
+      resources:
+        limits:
+          memory: 3072M
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8123/ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  apm-proxy:
+    image: zabbix/zabbix-proxy-sqlite3:ubuntu-8.0-latest
+    container_name: zabbix-apm-proxy
+    restart: unless-stopped
+    # Host network: talks to the local server on 127.0.0.1:10051 and listens for OTLP on 127.0.0.1:4317
+    network_mode: host
+    environment:
+      ZBX_HOSTNAME: apm-proxy-oracle
+      ZBX_PROXYMODE: "0"
+      ZBX_SERVER_HOST: 127.0.0.1
+      ZBX_LISTENPORT: "10052"
+      TZ: Europe/Warsaw
+    volumes:
+      - ./zabbix_proxy_apm.conf:/etc/zabbix/zabbix_proxy_apm.conf:ro
+      - ${DATA_FOLDER}/proxy:/var/lib/zabbix/db_data
+    depends_on:
+      - clickhouse
+    deploy:
+      resources:
+        limits:
+          memory: 512M
