@@ -3,7 +3,7 @@
 # Replica: CT104 (10.0.0.104) - gets overwritten every sync, except DHCP.
 services:
   adguardhome-sync:
-    image: ghcr.io/bakito/adguardhome-sync:v0.9.6
+    image: ghcr.io/bakito/adguardhome-sync:v0.10.1
     container_name: adguardhome-sync
     restart: unless-stopped
     command: run
