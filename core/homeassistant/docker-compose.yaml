@@ -8,6 +8,9 @@ services:
     restart: unless-stopped
     environment:
       TZ: Europe/Warsaw
+      # Classic TLS key exchange: the uplink resets ~20 % of connections with the
+      # post-quantum key share (Telegram notifications failed). See /config/tls/openssl.cnf.
+      OPENSSL_CONF: /config/tls/openssl.cnf
     volumes:
       - /opt/docker_data/homeassistant:/config
       - /etc/localtime:/etc/localtime:ro
