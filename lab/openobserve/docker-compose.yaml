@@ -23,8 +23,8 @@ services:
       resources:
         limits:
           memory: 1500M
+    # The image is distroless (no /bin/sh, curl or wget) and the binary has no
+    # health subcommand, so a Docker healthcheck cannot run inside it. Liveness is
+    # covered by Zabbix (container state) and /healthz from outside.
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:5080/healthz >/dev/null 2>&1 || curl -fs http://127.0.0.1:5080/healthz >/dev/null"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
+      disable: true
