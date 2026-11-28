@@ -22,7 +22,7 @@ services:
   # PlayStation 5 power state and wake/standby over the LAN (DDP); Remote Play credentials are
   # created once in its web UI (http://10.0.0.101:8645) and kept in /opt/docker_data/mqtt/ps5.
   ps5-mqtt:
-    image: ghcr.io/funkeyflo/ps5-mqtt:1.9.3
+    image: ghcr.io/funkeyflo/ps5-mqtt:1.9.4
     container_name: ps5-mqtt
     restart: unless-stopped
     # Required: device discovery uses UDP broadcasts on the LAN.
